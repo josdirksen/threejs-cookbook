@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>02.01 - Rotate around point in space</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+    var camControl;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        camControl = new THREE.OrbitControls(camera);
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMapEnabled=true;
+        renderer.shadowMapType=THREE.PCFSoftShadowMap;
+
+        var groundGeom = new THREE.PlaneGeometry(100,100,100,100);
+        var groundMat = new THREE.MeshPhongMaterial({color:'white'});
+//        groundMat.transparent=true;
+        groundMat.map = THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png");
+//        groundMat.shading = THREE.SmoothShading;
+//        groundMat.opacity=0.7;
+        var groundMesh = new THREE.Mesh(groundGeom, groundMat);
+        groundMesh.rotation.x=-Math.PI*0.5;
+        scene.add(groundMesh);
+        groundMesh.receiveShadow=true;
+        groundMesh.position.set(-25,-20,-25);
+
+
+        var sphere = new THREE.SphereGeometry(0.5,20,20);
+        var sphereMesh = new THREE.Mesh(sphere, new THREE.MeshLambertMaterial({color:'green'}));
+        sphereMesh.castShadow=true;
+        sphereMesh.position.set(0,5,0);
+        scene.add(sphereMesh);
+
+
+        // create a cube and add to scene
+        var cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+        var cubeMaterial = new THREE.MeshLambertMaterial();
+        cubeMaterial.color = new THREE.Color('red');
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.set(6,2,6);
+        cube.name='cube';
+        cube.castShadow = true;
+        scene.add(cube);
+
+
+
+        var light = new THREE.SpotLight();
+        light.position.set(25,26,33);
+        light.castShadow = true;
+        light.shadowMapEnabled=true;
+//        light.shadowCameraVisible=true;
+        light.shadowCameraNear=20;
+        light.shadowCameraFar=100;;
+//        light.shadowDarkness=2;
+        scene.add(light);
+
+        cube.lookAt(sphereMesh.position);
+
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 25;
+        camera.position.y = 26;
+        camera.position.z = 23;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotationSpeedX = 0.00001;
+            this.rotationSpeedY = 0.00001;
+            this.rotationSpeedZ = 0.00001;
+
+        };
+//        rotatePoint(cubeGeometry,cube.position, sphereMesh.position);
+        addControls(control);
+        console.log(cube.up);
+
+
+        // call the render function
+        render();
+    }
+
+    /**
+     * Rotate around a point in space. To determine the offset of the geometry, we
+     * need to determine the distance from the position of the geometry.
+     *
+     * @param geometry
+     * @param point
+     */
+    function rotatePoint(geometry, gemPos, point) {
+
+        var meshPos = gemPos.clone();;
+        var pointPos = point.clone();
+
+        var offSetX = meshPos.x - pointPos.x ;
+        var offSetY = meshPos.y - pointPos.y ;
+        var offSetZ = meshPos.z - pointPos.z ;
+
+        geometry.applyMatrix( new THREE.Matrix4().makeTranslation( offSetX, offSetY, offSetZ) );
+//        gemPos.x -= offSetX;
+//        gemPos.y -= offSetY;
+//        gemPos.z -= offSetZ;
+
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotationX', -0.2, 0.2);
+        gui.add(controlObject, 'rotationY', -0.2, 0.2);
+        gui.add(controlObject, 'rotationZ', -0.2, 0.2);
+
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        scene.getObjectByName('cube').rotation.x+=control.rotationSpeedX;
+        scene.getObjectByName('cube').rotation.y+=control.rotationSpeedY;
+        scene.getObjectByName('cube').rotation.z+=control.rotationSpeedZ;
+
+
+        camControl.update();
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

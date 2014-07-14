@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01.03 - CSS3DRenderer Skeleton</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/CSS3DRenderer.js"></script>
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .large {
+            font-size: xx-large;
+        }
+    </style>
+</head>
+<body>
+<script>
+
+    var string = '<div>' +
+            '<h1>This is an H1 Element.</h1>' +
+            '<span class="large">Hello Three.js cookbook</span>' +
+            '<textarea> And this is a textarea</textarea>' +
+            '</div>';
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a CSS3DRenderer
+        renderer = new THREE.CSS3DRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+//        renderer.domElement.style.position = 'absolute';
+//        renderer.domElement.style.top = 0;
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 500;
+        camera.position.y = 500;
+        camera.position.z = 500;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+        var cssElement = createCSS3DObject(string);
+        cssElement.position.set(100,100,100);
+        scene.add(cssElement);
+
+        // call the render function, after the first render, interval is determined
+        // by requestAnimationFrame
+        render();
+    }
+
+    function createCSS3DObject(s) {
+        // convert the string to dome elements
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = s;
+        var div = wrapper.firstChild;
+
+        // set some values on the div to style it, standard CSS
+        div.style.width = '370px';
+        div.style.height = '370px';
+        div.style.opacity = 0.7;
+        div.style.background = new THREE.Color(Math.random() * 0xffffff).getStyle();
+
+        // create a CSS3Dobject and return it.
+        var object = new THREE.CSS3DObject(div);
+        return object;
+    }
+
+    function render() {
+        // and render the scene
+        renderer.render(scene, camera);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01.07 - Control variables</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/TrackballControls.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+    <script src="../assets/fonts/gentilis_bold.typeface.js"></script>
+    <script src="../assets/fonts/gentilis_regular.typeface.js"></script>
+    <script src="../assets/fonts/optimer_bold.typeface.js"></script>
+    <script src="../assets/fonts/optimer_regular.typeface.js"></script>
+    <script src="../assets/fonts/helvetiker_bold.typeface.js"></script>
+    <script src="../assets/fonts/helvetiker_regular.typeface.js"></script>
+    <script src="../assets/fonts/droid/droid_sans_regular.typeface.js"></script>
+    <script src="../assets/fonts/droid/droid_sans_bold.typeface.js"></script>
+    <script src="../assets/fonts/droid/droid_serif_regular.typeface.js"></script>
+    <script src="../assets/fonts/droid/droid_serif_bold.typeface.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+    var camControl;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 4000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xffffff, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        var dirLight = new THREE.DirectionalLight( 0xffffff, 0.125 );
+        dirLight.position.set( 0, 0, 1 ).normalize();
+        scene.add( dirLight );
+
+        var pointLight = new THREE.PointLight( 0xffffff, 1.5 );
+        pointLight.position.set( 0, 100, 90 );
+        scene.add( pointLight );
+
+        var ambientLight = new THREE.AmbientLight(0x111111);
+        scene.add(ambientLight);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 0;
+        camera.position.y = 200;
+        camera.position.z = 700;
+
+        camera.lookAt(scene.position);
+
+
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.bevelEnabled = false;
+            this.bevelThickness = 8;
+            this.bevelSize = 4;
+
+            this.font = "helvetiker";
+            this.weight = "normal";
+            this.style = "normal";
+
+            this.height = 20;
+            this.size = 70;
+            this.curveSegments = 4;
+
+            this.text = "3D Text in Three.js";
+
+
+        };
+        addControls(control);
+
+        var params = {
+            material: 0,
+            extrudeMaterial: 1,
+            bevelEnabled: control.bevelEnabled,
+            bevelThickness: control.bevelThickness,
+            bevelSize: control.bevelSize,
+            font: control.font,
+            weight: control.weight,
+            style: control.style,
+            height: control.height,
+            size: control.size,
+            curveSegments: control.curveSegments
+        };
+
+        addText(control.text, params);
+
+        camControl = new THREE.OrbitControls(camera, renderer.domElement);
+
+        // call the render function
+        render();
+    }
+
+    function updateText() {
+        var currentText = scene.getObjectByName('text');
+        if (currentText) scene.remove(currentText);
+
+        var params = {
+            material: 0,
+            extrudeMaterial: 1,
+            bevelEnabled: control.bevelEnabled,
+            bevelThickness: control.bevelThickness,
+            bevelSize: control.bevelSize,
+            font: control.font,
+            weight: control.weight,
+            style: control.style,
+            height: control.height,
+            size: control.size,
+            curveSegments: control.curveSegments
+        };
+
+        addText(control.text, params);
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject,"height",5,50).onChange(updateText);
+        gui.add(controlObject,"size",20,100).onChange(updateText);
+        gui.add(controlObject,"curveSegments",2,12).step(1).onChange(updateText);
+        gui.add(controlObject,"bevelEnabled").onChange(updateText);
+        gui.add(controlObject,"bevelThickness",2,16).step(1).onChange(updateText);
+        gui.add(controlObject,"bevelSize",2,16).step(1).onChange(updateText);
+        gui.add(controlObject,"weight",["normal","bold"]).onChange(updateText);
+        gui.add(controlObject,"font",["helvetiker","optimer","gentilis","droid sans","droid serif"]).onChange(updateText);
+    }
+
+    function addText(text, params) {
+
+
+        var textGeo = new THREE.TextGeometry(text, params);
+        textGeo.computeBoundingBox();
+        textGeo.computeVertexNormals();
+
+        var material = new THREE.MeshFaceMaterial( [
+            new THREE.MeshPhongMaterial( { color: 0xff22cc, shading: THREE.FlatShading } ), // front
+            new THREE.MeshPhongMaterial( { color: 0xff22cc, shading: THREE.SmoothShading } ) // side
+        ] );
+
+        var textMesh = new THREE.Mesh(textGeo,material);
+        textMesh.position.x=-textGeo.boundingBox.max.x/2;
+        textMesh.position.y=-200;
+        textMesh.name = 'text';
+        scene.add(textMesh);
+
+    }
+
+
+
+    function render() {
+        renderer.render(scene, camera);
+        camControl.update();
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

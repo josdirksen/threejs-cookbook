@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01.07 - Control variables</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+
+//    When vertices have changed
+//    geometry.verticesNeedUpdate = true;
+//
+//    When faces or line definitions have changed
+//    geometry.elementsNeedUpdate = true;
+//
+//    When morph targets for morph based animations have changed
+//    geometry.morphTargetsNeedUpdate = true;
+//
+//    When UV mapping for mapping textures have changed
+//    geometry.uvsNeedUpdate = true;
+//
+//    When faceNormals or vertexNormals have changed
+//    geometry.normalsNeedUpdate = true;
+//
+//    When face or vertex colors have changed
+//    geometry.colorsNeedUpdate = true;
+//
+//    When vertext tangents have changed
+//    geometry.tangentsNeedUpdate = true;
+
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        var dirLight = new THREE.DirectionalLight();
+        dirLight.position.set(30,10,20);
+        scene.add(dirLight);
+
+        // create a cube and add to scene
+        var cubeGeometry = new THREE.BoxGeometry(10, 8, 10);
+        var cubeMaterial = new THREE.MeshLambertMaterial();
+        cubeMaterial.transparent = true;
+        cubeMaterial.vertexColors = THREE.FaceColors;
+
+        cubeGeometry.faces.forEach(function(e) {e.color = new THREE.Color(0xff0000)});
+
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.name='cube';
+        scene.add(cube);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 15;
+        camera.position.y = 16;
+        camera.position.z = 13;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+
+            this.changeColors = function() {
+                var mesh = scene.getObjectByName('cube');
+                mesh.geometry.faces.forEach(function(face) {
+                     face.color = new THREE.Color(Math.random() * 0xffffff);
+                });
+            };
+
+            this.setUpdateColorFlag = function() {
+                var mesh = scene.getObjectByName('cube');
+                mesh.geometry.colorsNeedUpdate = true;
+            }
+
+            this.changeVertices = function() {
+                var mesh = scene.getObjectByName('cube');
+                mesh.geometry.vertices.forEach(function(vertices) {
+                    vertices.x+=Math.random()*2-1;
+                    vertices.y+=Math.random()*2-1;
+                    vertices.z+=Math.random()*2-1;
+                });
+            }
+
+            this.setUpdateVerticesFlag = function() {
+                var mesh = scene.getObjectByName('cube');
+                mesh.geometry.verticesNeedUpdate = true;
+            }
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+
+        gui.add(controlObject, 'changeColors');
+        gui.add(controlObject, 'setUpdateColorFlag');
+        gui.add(controlObject, 'changeVertices');
+        gui.add(controlObject, 'setUpdateVerticesFlag');
+
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

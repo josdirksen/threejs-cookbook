@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01.07 - Control variables</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/TrackballControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+    var camControls;
+
+
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camControls = new THREE.TrackballControls(camera);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // create parametric and add to scene
+        // used http://reference.wolfram.com/mathematica/ref/ParametricPlot3D.html
+        // as reference
+        var paramFunction1 = function (u, v) {
+            var u = (u*2*Math.PI)-Math.PI;
+            var v = (v*2*Math.PI)-Math.PI;
+
+            var x = Math.sin(u) * Math.sin(v) + 0.05 * Math.cos(20 * v);
+            var y = Math.cos(u) * Math.sin(v) + 0.05 * Math.cos(20 * u);
+            var z = Math.cos(v);
+
+
+            return new THREE.Vector3(x, y, z);
+        }
+
+        // create parametric and add to scene
+        var paramFunction2 = function (u, v) {
+            var u = u*2*Math.PI;
+            var v = (v*2*Math.PI)-Math.PI;
+
+            var x = Math.cos(u);
+            var y = Math.sin(u) + Math.cos(v);
+            var z = Math.sin(v);
+
+
+            return new THREE.Vector3(x, y, z);
+        }
+
+        // create parametric and add to scene
+        var paramFunction3 = function (u, v) {
+            var u = u*2;
+            var v = (v*4*Math.PI);
+
+            var x = Math.cos(v)*Math.sin(u);
+            var y = Math.sin(v)*Math.sin(u);
+            var z = 0.2*v+(Math.cos(u)+Math.log(Math.tan(u/2)));
+
+
+            return new THREE.Vector3(x, y, z);
+        }
+
+        // create parametric and add to scene
+        // http://paulbourke.net/geometry/klein/
+        var paramFunction4 = function (u, v) {
+            var a = 3;
+            var n = 3;
+            var m = 1;
+
+            var u = u*4*Math.PI;
+            var v = v*2*Math.PI;
+
+            var x = (a + Math.cos(n*u/2.0) * Math.sin(v) - Math.sin(n*u/2.0) * Math.sin(2*v)) * Math.cos(m*u/2.0);
+            var y = (a + Math.cos(n*u/2.0) * Math.sin(v) - Math.sin(n*u/2.0) * Math.sin(2*v)) * Math.sin(m*u/2.0);
+            var z = Math.sin(n*u/2.0) * Math.sin(v) + Math.cos(n*u/2.0) * Math.sin(2*v);
+
+            return new THREE.Vector3(x, y, z);
+        }
+
+        var paramFunction5 = function (u, v) {
+
+            var u = u*Math.PI*2;
+            var v = v*8*Math.PI;
+
+            var x = Math.pow(1.2,v)*Math.pow((Math.sin(u)),0.5) * Math.sin(v);
+            var y = v*Math.sin(u) * Math.cos(u);
+            var z = Math.pow(1.2,v)*Math.pow((Math.sin(u)),0.3) * Math.cos(v);
+//            v*(sin(u)**2 *sin(v))
+
+            return new THREE.Vector3(x, y, z);
+
+        }
+
+
+
+
+
+
+
+        var directionalLight = new THREE.DirectionalLight();
+        directionalLight.position.set(-30, 50, 50);
+        scene.add(directionalLight);
+
+        var geom = new THREE.ParametricGeometry(paramFunction5, 100, 100);
+        var mat = new THREE.MeshPhongMaterial({color:0xcc3333a, side: THREE.DoubleSide, shading: THREE.FlatShading});
+        var mesh = new THREE.Mesh(geom, mat);
+        mesh.name = 'param';
+        mesh.scale.set(2,2,2);
+        console.log(geom);
+        scene.add(mesh);
+
+
+
+        // position and point the camera to the center of the scene
+        camera.position.x = -50;
+        camera.position.y = 150;
+        camera.position.z = 250;
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        // call the render function
+        render();
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        scene.getObjectByName('param').rotation.x+=0.01;
+        scene.getObjectByName('param').rotation.y+=0.01;
+        requestAnimationFrame(render);
+        camControls.update();
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

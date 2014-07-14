@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2.05 - Handle large number of objects</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/stats.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+    var stats;
+
+    var control;
+    var objects = [];
+
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 50;
+        camera.position.y = 50;
+        camera.position.z = 50;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.merged = false;
+            this.rotationSpeed = 0.005;
+            this.numberToAdd = 2000;
+            this.clear = function() {
+                if (scene.getObjectByName('mesh')) {
+                    scene.remove(scene.getObjectByName('mesh'));
+                }
+                objects.forEach(function(e) {
+                    scene.remove(e);
+                objects = [];
+                control.totalCubes = 0;
+                }
+                );
+            };
+
+            this.addCubes = function() {
+                control.clear();
+
+                if (control.merged) {
+                    var mergedGeometry = new THREE.Geometry();
+                    if (scene.getObjectByName('merged')) {
+                        scene.remove(scene.getObjectByName('merged'));
+                    }
+
+                    for (var i = 0 ; i < control.numberToAdd ; i++) {
+                        mergeCube(mergedGeometry);
+                    }
+
+                    console.log(mergedGeometry);
+
+                    var mesh = new THREE.Mesh(mergedGeometry, new THREE.MeshNormalMaterial({opacity:0.5, transparent:true}));
+                    mesh.name = 'merged';
+                    scene.add(mesh);
+                } else {
+                    for (var i = 0 ; i < control.numberToAdd ; i++) {
+                        addCube();
+                    }
+                }
+
+
+                control.totalCubes+=control.numberToAdd;
+            }
+            this.merge = function() {
+                var geom = new THREE.Geometry();
+                objects.forEach(function(e) {
+                    geom.merge();
+                });
+            };
+        };
+        addControls(control);
+
+
+       stats = createStats();
+        document.body.appendChild( stats.domElement );;
+
+        // call the render function
+        render();
+    }
+
+    function mergeCube(mergeInto) {
+        var cubeGeometry = new THREE.BoxGeometry(4*Math.random(), 4*Math.random(), 4*Math.random());
+        var translation = new THREE.Matrix4().makeTranslation(100*Math.random()-50, 0, 100*Math.random()-50);
+        cubeGeometry.applyMatrix(translation);
+
+        mergeInto.merge(cubeGeometry);
+    }
+
+    function addCube() {
+        var cubeGeometry = new THREE.BoxGeometry(4*Math.random(), 4*Math.random(), 4*Math.random());
+        var cubeMaterial = new THREE.MeshNormalMaterial({opacity:0.5, transparent:true});
+        cubeMaterial.transparent = true;
+
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.set(100*Math.random()-50, 0, 100*Math.random()-50);
+        scene.add(cube);
+
+        objects.push(cube);
+
+
+    }
+
+    function addControls(controlObject) {
+
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'merged');
+        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'numberToAdd');
+        gui.add(controlObject, 'addCubes');
+        gui.add(controlObject, 'clear');
+
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+
+        var x = camera.position.x;
+        var z = camera.position.z;
+
+        camera.position.x = x * Math.cos(control.rotationSpeed) + z * Math.sin(control.rotationSpeed);
+        camera.position.z = z * Math.cos(control.rotationSpeed) - x * Math.sin(control.rotationSpeed);
+
+        camera.lookAt(scene.position);
+
+        requestAnimationFrame(render);
+
+        stats.update();
+    }
+
+    function createStats() {
+        var stats = new Stats();
+        stats.setMode(0);
+
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+
+        return stats;
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

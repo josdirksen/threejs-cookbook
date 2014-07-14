@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=80);
+        }
+
+        .white_content {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 70px;
+            padding: 16px;
+            border: 2px solid grey;
+            background-color: black;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        .big-message {
+            width: 80%; /*can be in percentage also.*/
+            height: auto;
+            margin: 0 auto;
+            padding: 5px;
+            position: relative;
+            text-align: center;
+            vertical-align: middle;
+            color: white;
+
+            font-family: Palatino, "Palatino LT STD", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+            font-size: xx-large;
+        }
+
+    </style>
+    <title></title>
+</head>
+<body>
+
+
+<!-- Lightbox to show when WebGL is supported or not -->
+<div id="light" class="white_content">
+    <div class="big-message" id="message">
+        <!--<div id="message"></div>-->
+    </div>
+    <a href="javascript:void(0)" onclick="hideLightbox()">Close</a>
+</div>
+<div id="fade" class="black_overlay"></div>
+
+
+<script>
+
+    var hasGl = detectWebGL();
+    if (!hasGl) {
+        showLightbox("WebGL is supported");
+    } else {
+        showLightbox("WebGL is not-supported");
+    }
+
+    function showLightbox(message) {
+        var lightBox = document.getElementById('light');
+        lightBox.style.display = 'block';
+
+        var fadeBox = document.getElementById('fade');
+        fadeBox.style.display = 'block'
+
+        var msg = document.getElementById('message');
+        msg.textContent=message;
+    }
+
+    function hideLightbox() {
+        var lightBox = document.getElementById('light');
+        lightBox.style.display = 'none';
+
+        var fadeBox = document.getElementById('fade');
+        fadeBox.style.display = 'none'
+    }
+
+
+    // loosely based on the http://get.webgl.org
+    function detectWebGL() {
+
+        // first create a canvas element
+        var testCanvas = document.createElement("canvas");
+        // and from that canvas get the webgl context
+        var gl = null;
+
+        // if exceptions are thrown, indicates webgl is null
+        try {
+            gl = testCanvas.getContext("webgl");
+
+        } catch (x) {
+            gl = null;
+        }
+        // if webgl is all good return true;
+        if (gl) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+</script>
+</body>
+</html>

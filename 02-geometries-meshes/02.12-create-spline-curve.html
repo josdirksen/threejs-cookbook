@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01.07 - Control variables</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        drawSpline();
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 0;
+        camera.position.y = 40;
+        camera.position.z = 40;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotationSpeed = 0.005;
+            this.scale = 1;
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+    function drawSpline() {
+        // smooth my curve over this many points
+        var numPoints = 100;
+        var start = new THREE.Vector3(-20, 0, 0);
+        var middle = new THREE.Vector3(0, 30, 0);
+        var end = new THREE.Vector3(20, 0, 0);
+
+        var curveQuad = new THREE.QuadraticBezierCurve3(start, middle, end);
+        var cp = new THREE.CurvePath();
+        cp.add(curveQuad);
+
+        console.log(cp);
+        console.log(curveQuad);
+
+        var material = new THREE.LineBasicMaterial({
+            color: 0xff00f0,
+        });
+
+        var geometry = cp.createPointsGeometry(50);
+        var line = new THREE.Line(geometry, material);
+        scene.add(line);
+
+        var tube = new THREE.TubeGeometry(new THREE.SplineCurve3(geometry.vertices),200,2,20,false);
+        var mesh = new THREE.Mesh(tube,new THREE.MeshNormalMaterial());
+
+        scene.add(mesh);
+
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'scale', 0.01, 2);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

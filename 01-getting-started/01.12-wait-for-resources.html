@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>01.12 - wait for resources to load</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/q.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    var resource = "../assets/sounds/wagner-short.ogg";
+    var texture = "../assets/textures/debug.png";
+    var texture404 = "../assets/textures/debug.jpg";
+    var model = "../assets/models/monkey-anim.js";
+
+    function init() {
+        loadModel(model)
+                .then(function(result) {return loadTexture(texture)})
+                .then(function(result) {return loadModel(model)})
+                .then(function(result) {return loadTexture(texture)})
+                .then(function(result) {return loadOthers(resource)})
+                .then(function(result) {return loadModelWithProgress(model)})
+                .then(function(result) {return loadModel(model)})
+                .then(function(result) {return loadOthers(resource)})
+                .then(function(result) {return loadModel(model)})
+                .then(function() {console.log("All done with sequence")})
+                .catch(function(error) {
+                    console.log("Error occured in sequence:",error);
+                })
+                .progress(function(e){
+                    console.log("Progress event received:", e);
+                });
+    }
+
+
+    /**
+     * To load a texture you can use the Three.js provided imageloader
+     */
+    function loadTexture(texture) {
+
+        var deferred = Q.defer();
+        var text = THREE.ImageUtils.loadTexture(texture, null, function(loaded) {
+            console.log("Loaded texture: ", texture);
+            deferred.resolve(loaded);
+        }, function(error){
+            deferred.reject(error);
+        });
+
+        return deferred.promise;
+    }
+
+    /**
+     * To load a model you use one of the provided model loaders.
+     */
+    function loadModel(model) {
+
+        var deferred = Q.defer();
+        var jsonLoader = new THREE.JSONLoader();
+        jsonLoader.load(model,function(loaded) {
+            console.log("Loaded model: ", model);
+            deferred.resolve(loaded);
+        },null);
+
+        return deferred.promise;
+    }
+
+    /**
+     * To load something else asynchronously, you can just use a normal XMLHTTPRequest
+     * or a simple helper library, or use the XHRLoader already provided by Three.js
+     */
+    function loadOthers(res) {
+        var deferred = Q.defer();
+
+        var xhrLoader = new THREE.XHRLoader();
+        xhrLoader.load(res, function(loaded) {
+            console.log("Loaded other: ", res);
+            deferred.resolve(loaded);
+        }, function(progress) {
+            deferred.notify(progress);
+        }, function(error){
+            deferred.reject(error);
+        });
+
+        return deferred.promise;
+    }
+
+    function loadModelWithProgress(model) {
+        var deferred = Q.defer();
+
+        var jsonLoader = new THREE.JSONLoader();
+        jsonLoader.loadAjaxJSON(jsonLoader,model,
+                function(model){
+                    console.log("Loaded model with progress: ", model);
+                    deferred.resolve(model)
+                },null,
+                function(progress){deferred.notify(progress)});
+
+        return deferred.promise;
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

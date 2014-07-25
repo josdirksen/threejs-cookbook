@@ -145,7 +145,6 @@
 
     function addText(text, params) {
 
-
         var textGeo = new THREE.TextGeometry(text, params);
         textGeo.computeBoundingBox();
         textGeo.computeVertexNormals();
@@ -160,7 +159,6 @@
         textMesh.position.y=-200;
         textMesh.name = 'text';
         scene.add(textMesh);
-
     }
 
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>01.07 - Control variables</title>
+    <title>02.15 - Apply Matrix Transformations</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <style>
@@ -83,7 +83,6 @@
                 // or do it on the geometry
                 // cube.geometry applyMatrix(translationMatrix);
                 // cube.geometry.verticesNeedUpdate = true;
-                console.log(cube.geometry);
             }
 
             this.doScale = function() {
@@ -94,7 +93,6 @@
                         0,         0,         0,         1
                 );
 
-                cube.applyMatrix(scaleMatrix);
                 cube.geometry.applyMatrix(scaleMatrix);
                 cube.geometry.verticesNeedUpdate = true;
             }
@@ -107,7 +105,7 @@
                         0,      0,      0,      1
                 );
 
-                cube.applyMatrix(scaleMatrix);
+
                 cube.geometry.applyMatrix(scaleMatrix);
                 cube.geometry.verticesNeedUpdate = true;
             }

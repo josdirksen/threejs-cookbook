@@ -23,7 +23,7 @@
 
     var control;
     var camControl;
-    var earthPivot;
+    var pivotPoint;
 
     function init() {
 
@@ -44,41 +44,38 @@
         renderer.shadowMapType=THREE.PCFSoftShadowMap;
 
 
+        // create a simple sphere
         var sphere = new THREE.SphereGeometry(6.5,20,20);
         var spherMat = new THREE.MeshLambertMaterial({color: 0x5555ff});
         var sphereMesh = new THREE.Mesh(sphere, spherMat);
-        sphereMesh.castShadow=true;
+        sphereMesh.receiveShadow=true;
         sphereMesh.position.set(0,1,0);
-
         scene.add(sphereMesh);
 
-        earthPivot = new THREE.Object3D();
-        earthPivot.rotation.x=0.4;
-        sphereMesh.add(earthPivot);
-        sphereMesh.receiveShadow=true;
-
+        // add an object as pivot point to the sphere
+        pivotPoint = new THREE.Object3D();
+        pivotPoint.rotation.x=0.4;
+        sphereMesh.add(pivotPoint);
 
         // create a cube and add to scene
         var cubeGeometry = new THREE.BoxGeometry(2, 4, 2);
         var cubeMaterial = new THREE.MeshLambertMaterial();
         cubeMaterial.color = new THREE.Color('red');
         cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        // position is relative to it's parent
         cube.position.set(14,4,6);
         cube.name='cube';
         cube.castShadow = true;
-        earthPivot.add(cube);
+        // make the pivotpoint the cube's parent.
+        pivotPoint.add(cube);
 
-
-
-
+        // add some light
         var light = new THREE.SpotLight();
         light.position.set(40,4,40);
         light.castShadow = true;
         light.shadowMapEnabled=true;
-//        light.shadowCameraVisible=true;
         light.shadowCameraNear=20;
         light.shadowCameraFar=100;;
-//        light.shadowDarkness=2;
         scene.add(light);
 
 
@@ -106,37 +103,10 @@
 
         };
 
-
-//        rotatePoint(cubeGeometry,cube.position, sphereMesh.position);
         addControls(control);
-        console.log(cube.up);
-
 
         // call the render function
         render();
-    }
-
-    /**
-     * Rotate around a point in space. To determine the offset of the geometry, we
-     * need to determine the distance from the position of the geometry.
-     *
-     * @param geometry
-     * @param point
-     */
-    function rotatePoint(geometry, gemPos, point) {
-
-        var meshPos = gemPos.clone();;
-        var pointPos = point.clone();
-
-        var offSetX = meshPos.x - pointPos.x ;
-        var offSetY = meshPos.y - pointPos.y ;
-        var offSetZ = meshPos.z - pointPos.z ;
-
-        geometry.applyMatrix( new THREE.Matrix4().makeTranslation( offSetX, offSetY, offSetZ) );
-//        gemPos.x -= offSetX;
-//        gemPos.y -= offSetY;
-//        gemPos.z -= offSetZ;
-
     }
 
     function addControls(controlObject) {
@@ -144,9 +114,9 @@
         gui.add(controlObject, 'rotationSpeedX', -0.2, 0.2);
         gui.add(controlObject, 'rotationSpeedY', -0.2, 0.2);
         gui.add(controlObject, 'rotationSpeedZ', -0.2, 0.2);
-        gui.add(controlObject, 'rotationX').onChange(function(v){earthPivot.rotation.x=v});
-        gui.add(controlObject, 'rotationY').onChange(function(v){earthPivot.rotation.y=v});
-        gui.add(controlObject, 'rotationZ').onChange(function(v){earthPivot.rotation.z=v});
+        gui.add(controlObject, 'rotationX').onChange(function(v){pivotPoint.rotation.x=v});
+        gui.add(controlObject, 'rotationY').onChange(function(v){pivotPoint.rotation.y=v});
+        gui.add(controlObject, 'rotationZ').onChange(function(v){pivotPoint.rotation.z=v});
 
 
         gui.add(controlObject, 'cubeRotationSpeedX', -0.2, 0.2);
@@ -157,26 +127,18 @@
 
     function render() {
         renderer.render(scene, camera);
-        earthPivot.rotation.x+=control.rotationSpeedX;
-        earthPivot.rotation.y+=control.rotationSpeedY;
-        earthPivot.rotation.z+=control.rotationSpeedZ;
+        pivotPoint.rotation.x+=control.rotationSpeedX;
+        pivotPoint.rotation.y+=control.rotationSpeedY;
+        pivotPoint.rotation.z+=control.rotationSpeedZ;
 
-        control.rotationX = earthPivot.rotation.x;
-        control.rotationY = earthPivot.rotation.y;
-        control.rotationZ = earthPivot.rotation.z;
+        control.rotationX = pivotPoint.rotation.x;
+        control.rotationY = pivotPoint.rotation.y;
+        control.rotationZ = pivotPoint.rotation.z;
 
+        cube.rotation.x+=control.cubeRotationSpeedX;
+        cube.rotation.y+=control.cubeRotationSpeedY;
+        cube.rotation.z+=control.cubeRotationSpeedZ;
 
-
-
-            cube.rotation.x+=control.cubeRotationSpeedX;
-            cube.rotation.y+=control.cubeRotationSpeedY;
-            cube.rotation.z+=control.cubeRotationSpeedZ;
-
-
-
-
-
-//        camControl.update();
         requestAnimationFrame(render);
     }
 

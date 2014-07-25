@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>02.06 - Terrain from heightmap</title>
+    <title>02.06 - Create terrain from heightmap</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <script src="../libs/chroma.min.js"></script>
@@ -20,7 +20,7 @@
     var camera;
 
     var control;
-    var scale = chroma.scale(['blue','green','yellow']).domain([0,50]);
+    var scale = chroma.scale(['blue', 'green', 'red']).domain([0, 50]);
 
     function init() {
 
@@ -39,7 +39,7 @@
 
         // add light
         var light = new THREE.DirectionalLight();
-        light.position.set(1200,1200,1200);
+        light.position.set(1200, 1200, 1200);
         scene.add(light);
 
         // position and point the camera to the center of the scene
@@ -51,7 +51,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -59,14 +59,13 @@
 
         createGeometryFromMap();
 
-            // call the render function
+        // call the render function
         render();
     }
 
     function createGeometryFromMap() {
         var depth = 512;
         var width = 512;
-
 
         var spacingX = 3;
         var spacingZ = 3;
@@ -79,73 +78,60 @@
 
         var img = new Image();
         img.src = "../assets/other/grandcanyon.png";
-//        img.src = "../assets/other/hawaii.png";
-        img.onload = function() {
+        img.onload = function () {
             // draw on canvas
-            ctx.drawImage(img,0,0);
-            var pixel = ctx.getImageData(0,0,width,depth);
+            ctx.drawImage(img, 0, 0);
+            var pixel = ctx.getImageData(0, 0, width, depth);
             console.log(pixel);
             var geom = new THREE.Geometry;
             var output = [];
-            for (var x = 0 ; x < depth ; x++) {
-                for (var z = 0 ; z < width ; z++) {
+            for (var x = 0; x < depth; x++) {
+                for (var z = 0; z < width; z++) {
                     // get pixel
                     // since we're grayscale, we only need one element
 
-                    var yValue = pixel.data[z*4+(depth*x*4)]/heightOffset;
-                    var vertex = new THREE.Vector3(x*spacingX, yValue,z*spacingZ);
+                    var yValue = pixel.data[z * 4 + (depth * x * 4)] / heightOffset;
+                    var vertex = new THREE.Vector3(x * spacingX, yValue, z * spacingZ);
                     geom.vertices.push(vertex);
                 }
             }
 
+            // we create a rectangle between four vertices, and we do
+            // that as two triangles.
+            for (var z = 0; z < depth - 1; z++) {
+                for (var x = 0; x < width - 1; x++) {
+                    // we need to point to the position in the array
+                    // a - - b
+                    // |  x  |
+                    // c - - d
+                    var a = x + z * width;
+                    var b = (x + 1) + (z * width);
+                    var c = x + ((z + 1) * width);
+                    var d = (x + 1) + ((z + 1) * width);
 
+                    var face1 = new THREE.Face3(a, b, d);
+                    var face2 = new THREE.Face3(d, c, a);
 
-                // we create a rectangle between four vertices, and we do
-                // that as two triangles.
-                for (var z = 0 ; z < depth-1 ; z++) {
-                    for (var x = 0 ; x < width-1 ; x++) {
-                        // we need to point to the position in the array
-                        // a - - b
-                        // |  x  |
-                        // c - - d
-                        var a = x + z*width;
-                        var b = (x+1) + (z * width);
-                        var c = x + ((z+1) * width);
-                        var d = (x+1) + ((z+1) * width);
+                    face1.color = new THREE.Color(scale(getHighPoint(geom, face1)).hex());
+                    face2.color = new THREE.Color(scale(getHighPoint(geom, face2)).hex())
 
-                        var face1 = new THREE.Face3(a, b, d );
-                        var face2 = new THREE.Face3(d ,c, a );
-
-                        face1.color = new THREE.Color(scale(getHighPoint(geom, face1)).hex());
-                        face2.color = new THREE.Color(scale(getHighPoint(geom, face2)).hex())
-
-                        geom.faces.push(face1);
-                        geom.faces.push(face2);
-                    }
+                    geom.faces.push(face1);
+                    geom.faces.push(face2);
                 }
+            }
 
+            geom.computeVertexNormals(true);
+            geom.computeFaceNormals();
+            geom.computeBoundingBox();
 
-                geom.computeVertexNormals(true);
-                geom.computeFaceNormals();
-                geom.computeBoundingBox();
+            var zMax = geom.boundingBox.max.z;
+            var xMax = geom.boundingBox.max.x;
 
-                var zMax = geom.boundingBox.max.z;
-                var xMax = geom.boundingBox.max.x;
-
-
-
-
-//            mat.vertexColors = THREE.FaceColors;
-                var mesh = new THREE.Mesh(geom, new THREE.MeshLambertMaterial({vertexColors: THREE.FaceColors, color:0x666666, shading: THREE.NoShading}));
-                mesh.translateX(-xMax/2);
-            mesh.translateZ(-zMax/2);
+            var mesh = new THREE.Mesh(geom, new THREE.MeshLambertMaterial({vertexColors: THREE.FaceColors, color: 0x666666, shading: THREE.NoShading}));
+            mesh.translateX(-xMax / 2);
+            mesh.translateZ(-zMax / 2);
             scene.add(mesh);
-            mesh.name='valley';
-//            var ps = new THREE.ParticleSystem(geom);
-//            scene.add(ps);
-//                console.log(geom);
-
-
+            mesh.name = 'valley';
         };
 
     }

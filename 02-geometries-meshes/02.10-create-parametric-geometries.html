@@ -102,10 +102,8 @@
             var x = Math.pow(1.2,v)*Math.pow((Math.sin(u)),0.5) * Math.sin(v);
             var y = v*Math.sin(u) * Math.cos(u);
             var z = Math.pow(1.2,v)*Math.pow((Math.sin(u)),0.3) * Math.cos(v);
-//            v*(sin(u)**2 *sin(v))
 
             return new THREE.Vector3(x, y, z);
-
         }
 
 
@@ -122,7 +120,7 @@
         var mat = new THREE.MeshPhongMaterial({color:0xcc3333a, side: THREE.DoubleSide, shading: THREE.FlatShading});
         var mesh = new THREE.Mesh(geom, mat);
         mesh.name = 'param';
-        mesh.scale.set(2,2,2);
+        mesh.scale.set(4,4,4);
         console.log(geom);
         scene.add(mesh);
 

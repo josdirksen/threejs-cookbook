@@ -75,8 +75,6 @@
                         mergeCube(mergedGeometry);
                     }
 
-                    console.log(mergedGeometry);
-
                     var mesh = new THREE.Mesh(mergedGeometry, new THREE.MeshNormalMaterial({opacity:0.5, transparent:true}));
                     mesh.name = 'merged';
                     scene.add(mesh);

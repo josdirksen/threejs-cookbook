@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>01.07 - Control variables</title>
+    <title>02.12 - Spline Curve</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <style>
@@ -44,53 +44,32 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
-            this.rotationSpeed = 0.005;
-            this.scale = 1;
-        };
-        addControls(control);
-
         // call the render function
         render();
     }
 
     function drawSpline() {
         // smooth my curve over this many points
-        var numPoints = 100;
+        var numPoints = 15;
         var start = new THREE.Vector3(-20, 0, 0);
         var middle = new THREE.Vector3(0, 30, 0);
         var end = new THREE.Vector3(20, 0, 0);
 
         var curveQuad = new THREE.QuadraticBezierCurve3(start, middle, end);
-        var cp = new THREE.CurvePath();
-        cp.add(curveQuad);
 
-        console.log(cp);
-        console.log(curveQuad);
-
-        var material = new THREE.LineBasicMaterial({
-            color: 0xff00f0,
-        });
-
-        var geometry = cp.createPointsGeometry(50);
-        var line = new THREE.Line(geometry, material);
-        scene.add(line);
-
-        var tube = new THREE.TubeGeometry(new THREE.SplineCurve3(geometry.vertices),200,2,20,false);
-        var mesh = new THREE.Mesh(tube,new THREE.MeshNormalMaterial());
+        var tube = new THREE.TubeGeometry(curveQuad,numPoints,2,20,false);
+        var mesh = new THREE.Mesh(tube,new THREE.MeshNormalMaterial({opacity:0.6 , transparent: true}));
+        mesh.name = 'tube';
 
         scene.add(mesh);
 
     }
 
-    function addControls(controlObject) {
-        var gui = new dat.GUI();
-        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
-        gui.add(controlObject, 'scale', 0.01, 2);
-    }
 
     function render() {
         renderer.render(scene, camera);
+
+        scene.getObjectByName('tube').rotation.y+=0.01;
 
         requestAnimationFrame(render);
     }

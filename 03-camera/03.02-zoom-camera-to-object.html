@@ -28,42 +28,78 @@
         // create a camera, which defines where we're looking at.
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
+        // position and point the camera to the center of the scene
+        camera.position.x = 15;
+        camera.position.y = 15;
+        camera.position.z = 15;
+        camera.lookAt(scene.position);
+
         // create a render, sets the background color and the size
         renderer = new THREE.WebGLRenderer();
-        renderer.setClearColor(0x000000, 1.0);
+        renderer.setClearColor(0xaaaaaa, 1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
+        var directionalLight = new THREE.DirectionalLight();
+        directionalLight.position.set(40,40,20);
+        scene.add(directionalLight);
+
+
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
-        var cubeMaterial = new THREE.MeshNormalMaterial();
-        cubeMaterial.transparent = true;
+        var cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+        cubeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png")
+
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.name='cube';
+        cube.position.set(0,0,0);
         scene.add(cube);
 
         // position and point the camera to the center of the scene
         camera.position.x = 15;
-        camera.position.y = 16;
-        camera.position.z = 13;
+        camera.position.y = 15;
+        camera.position.z = 15;
         camera.lookAt(scene.position);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
         control = new function() {
-            this.rotationSpeed = 0.005;
+            this.correctForDepth = 1.3;
+            this.rotationSpeed = 0.01;
             this.scale = 1;
+            this.updateCamera = function() {
+                // create an helper
+                var helper = new THREE.BoundingBoxHelper(cube);
+                helper.update();
+
+                // get the bounding sphere
+                var boundingSphere = helper.box.getBoundingSphere();
+
+                // calculate the distance from the center of the sphere
+                // and subtract the radius to get the real distance.
+                var center = boundingSphere.center;
+                var radius = boundingSphere.radius;
+
+                var distance = center.distanceTo(camera.position) - radius ;
+                var realHeight = Math.abs(helper.box.max.y - helper.box.min.y);
+
+                var fov = 2 * Math.atan( realHeight * control.correctForDepth / ( 2 * distance ) ) * ( 180 / Math.PI );
+
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            }
         };
         addControls(control);
 
-        // call the render function
         render();
     }
 
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
-        gui.add(controlObject, 'scale', 0.01, 2);
+        gui.add(controlObject, 'correctForDepth', 1, 3);
+        gui.add(controlObject, 'updateCamera');
+        gui.add(controlObject, 'rotationSpeed',-1,1).step(0.001);
+        gui.add(controlObject, 'scale',0,2).step(0.001);
     }
 
     function render() {

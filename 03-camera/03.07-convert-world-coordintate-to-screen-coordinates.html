@@ -39,6 +39,7 @@
         cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.name='cube';
+        cube.position.set(9*Math.random()-4.5, 9*Math.random()-4.5, 9*Math.random()-4.5);
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -53,6 +54,14 @@
         control = new function() {
             this.rotationSpeed = 0.005;
             this.scale = 1;
+            this.x = 0;
+            this.y = 0;
+
+            this.calculateScreenCoordinate = function() {
+                var result = deteremineScreenCoordinate(cube);
+                control.x = result.x;
+                control.y = result.y;
+            }
         };
         addControls(control);
 
@@ -64,6 +73,24 @@
         var gui = new dat.GUI();
         gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
         gui.add(controlObject, 'scale', 0.01, 2);
+        gui.add(controlObject, 'calculateScreenCoordinate');
+        gui.add(controlObject, 'x').listen();
+        gui.add(controlObject, 'y').listen();
+
+    }
+
+    function deteremineScreenCoordinate (object) {
+        var projector = new THREE.Projector();
+        var vector = new THREE.Vector3();
+        projector.projectVector( vector.setFromMatrixPosition( object.matrixWorld ), camera );
+
+        var width = window.innerWidth, height = window.innerHeight;
+        var widthHalf = width / 2, heightHalf = height / 2;
+
+        vector.x = ( vector.x * widthHalf ) + widthHalf;
+        vector.y = - ( vector.y * heightHalf ) + heightHalf;
+
+        return vector;
     }
 
     function render() {

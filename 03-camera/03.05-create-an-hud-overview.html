@@ -1,83 +1,124 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>03.05 - Create a HUD overlay</title>
-    <script src="../libs/three.js"></script>
-    <script src="../libs/dat.gui.min.js"></script>
+    <title>three.js canvas - camera - orthographic</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
         body {
-            margin: 0;
-            overflow: hidden;
+
         }
     </style>
 </head>
+<body>
+
+<script src="../libs/three.js"></script>
+
+
 <script>
 
-    // global variables
-    var renderer;
-    var scene;
-    var camera;
+    var WIDTH = 800;
+    var HEIGHT = 600;
 
-    var control;
+    var container;
+    var orthoCamera, orthoScene, renderer;
+    var persScene, persCamera;
+
+    var sphereMesh;
+
+    init();
+    animate();
 
     function init() {
 
-        // create a scene, that will hold all our elements such as objects, cameras and lights.
-        scene = new THREE.Scene();
+        container = document.createElement( 'div' );
+        container.setAttribute("style","width:800px; height:600px");
+        document.body.appendChild( container );
 
-        // create a camera, which defines where we're looking at.
-        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        orthoCamera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 500, 1000 );
+        orthoCamera.position.x = 0;
+        orthoCamera.position.y = 0;
+        orthoCamera.position.z = 0;
 
-        // create a render, sets the background color and the size
+        persCamera = new THREE.PerspectiveCamera( 60, WIDTH / HEIGHT, 1, 2100 );
+        persScene.add(persCamera);
+        persCamera.position.set(10,16,20);
+
+        orthoScene = new THREE.Scene();
+        persScene = new THREE.Scene();
+
+        persCamera.lookAt(persScene.position);
+
+        var directionalLight = new THREE.DirectionalLight();
+        directionalLight.position.set(20,20,0);
+        persScene.add(directionalLight);
+
+        addFloor(persScene);
+
+        var sphereGeom = new THREE.SphereGeometry(7,20,20);
+        var sphereMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});
+        sphereMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/seamless_metal.jpg");
+        sphereMesh = new THREE.Mesh(sphereGeom, sphereMaterial);
+        persScene.add(sphereMesh);
+
+        var spriteMaterial = new THREE.SpriteMaterial({map: THREE.ImageUtils.loadTexture("../assets/overlay/overlay.png")});
+        var sprite = new THREE.Sprite(spriteMaterial);
+        sprite.position.set(0,0,10);
+        sprite.scale.set(800,600,0.1);
+        orthoScene.add(sprite);
+
+        // Lights
         renderer = new THREE.WebGLRenderer();
-        renderer.setClearColor(0x000000, 1.0);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor( 0xf0f0f0 );
+        renderer.setSize( 800, 600 );
+        renderer.autoClear = false;
 
-        // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
-        var cubeMaterial = new THREE.MeshNormalMaterial();
-        cubeMaterial.transparent = true;
-        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
-        scene.add(cube);
+        container.appendChild( renderer.domElement );
+    }
 
-        // position and point the camera to the center of the scene
-        camera.position.x = 15;
-        camera.position.y = 16;
-        camera.position.z = 13;
-        camera.lookAt(scene.position);
 
-        // add the output of the renderer to the html element
-        document.body.appendChild(renderer.domElement);
+    function addFloor(scene) {
+        var floorGeometry = new THREE.PlaneGeometry(400,400,20,20);
+        var floorMaterial = new THREE.MeshPhongMaterial();
+        floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
 
-        control = new function() {
-            this.rotationSpeed = 0.005;
-            this.scale = 1;
-        };
-        addControls(control);
+        floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+        floorMaterial.map.repeat.set( 8, 8 );
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -0.5*Math.PI;
+        scene.add(floorMesh);
+    }
 
-        // call the render function
+    //
+
+    function animate() {
+        requestAnimationFrame( animate );
         render();
+
+
     }
 
-    function addControls(controlObject) {
-        var gui = new dat.GUI();
-        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
-        gui.add(controlObject, 'scale', 0.01, 2);
-    }
-
+    var step = 0;
     function render() {
-        renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        var scale = Math.abs(Math.sin(step+=0.01))+0.5;
+        sphereMesh.scale.set(scale, scale, scale);
 
-        requestAnimationFrame(render);
+        var x = persCamera.position.x;
+        var z = persCamera.position.z;
+
+        persCamera.position.x = x * Math.cos(0.02) + z * Math.sin(0.02);
+        persCamera.position.z = z * Math.cos(0.02) - x * Math.sin(0.02);
+        persCamera.lookAt(persScene.position);
+
+        renderer.clear();
+        renderer.render( persScene, persCamera );
+        renderer.clearDepth();
+        renderer.render( orthoScene, orthoCamera );
     }
-
-    // calls the init function when the window is done loading.
-    window.onload = init;
 
 </script>
-<body>
+
 </body>
 </html>

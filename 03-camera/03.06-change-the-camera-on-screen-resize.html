@@ -74,8 +74,16 @@
         requestAnimationFrame(render);
     }
 
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
     // calls the init function when the window is done loading.
     window.onload = init;
+
+    window.addEventListener('resize', onResize, false);
 
 </script>
 <body>

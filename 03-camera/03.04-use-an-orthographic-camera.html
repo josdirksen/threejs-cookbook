@@ -26,50 +26,97 @@
         scene = new THREE.Scene();
 
         // create a camera, which defines where we're looking at.
-        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+//        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera = new THREE.OrthographicCamera();
+
+        camera.left = window.innerWidth / -2;
+        camera.right =  window.innerWidth / 2;
+        camera.top = window.innerHeight / 2;
+        camera.bottom = window.innerHeight / - 2;
+        camera.near = 0.1;
+        camera.far = 1500;
+
+        camera.updateProjectionMatrix();
 
         // create a render, sets the background color and the size
         renderer = new THREE.WebGLRenderer();
         renderer.setClearColor(0x000000, 1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
-        var cubeMaterial = new THREE.MeshNormalMaterial();
-        cubeMaterial.transparent = true;
-        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
-        scene.add(cube);
 
         // position and point the camera to the center of the scene
-        camera.position.x = 15;
-        camera.position.y = 16;
-        camera.position.z = 13;
+        camera.position.x = -500;
+        camera.position.y = 200;
+        camera.position.z = 300;
         camera.lookAt(scene.position);
+
+        var dirLight = new THREE.DirectionalLight();
+        scene.add(dirLight);
+        dirLight.position.set(-500,200,300);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
         control = new function() {
-            this.rotationSpeed = 0.005;
-            this.scale = 1;
+            this.left = camera.left;
+            this.right = camera.right;
+            this.top = camera.top;
+            this.bottom = camera.bottom;
+            this.far = camera.far;
+            this.near = camera.near;
+
+            this.updateCamera = function() {
+                camera.left = control.left;
+                camera.right = control.right;
+                camera.top = control.top;
+                camera.bottom = control.bottom;
+                camera.far = control.far;
+                camera.near = control.near;
+
+                camera.updateProjectionMatrix();
+            };
         };
+
         addControls(control);
+
+        for (var x = 0 ; x < 15 ; x++)  {
+            for (var y = 0 ; y < 15 ; y++)  {
+                addCube(x, y);
+            }
+        }
+
 
         // call the render function
         render();
     }
 
+    function addCube(x, y) {
+        // create a cube and add to scene
+        var cubeGeometry = new THREE.BoxGeometry(50, 50, 50);
+        var cubeMaterial = new THREE.MeshLambertMaterial();
+        cubeMaterial.color = new THREE.Color(0xffffff*Math.random())
+        cubeMaterial.transparent = true;
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.name='cube';
+        cube.position.x=60 * x - 450;
+        cube.position.y=0;
+        cube.position.z=60 * y - 450;
+        scene.add(cube);
+
+    }
+
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
-        gui.add(controlObject, 'scale', 0.01, 2);
+        gui.add(controlObject,'left',-1000, 0).onChange(controlObject.updateCamera);
+        gui.add(controlObject,'right',0, 1000).onChange(controlObject.updateCamera);
+        gui.add(controlObject,'top', 0, 1000).onChange(controlObject.updateCamera);
+        gui.add(controlObject,'bottom',-1000, 0).onChange(controlObject.updateCamera);
+        gui.add(controlObject,'far',100, 2000).onChange(controlObject.updateCamera);
+        gui.add(controlObject,'near',0,200).onChange(controlObject.updateCamera);
     }
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
 
         requestAnimationFrame(render);
     }

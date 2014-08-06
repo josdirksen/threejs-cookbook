@@ -13,6 +13,16 @@
 </head>
 <script>
 
+    // Steps
+    // 1. Define a camera
+    // 2. Set the aspect ratio
+    // 3. Set the field of view
+    // 4. Set the near and far properties.
+    // 5. There is more: You can also set everything in the constructor
+    // -. There is more: A Three.js Camera is a Object3D, so you can also move and rotate it around
+    //    like any other object.
+    // -. See also: orthographic camera and zooming in.
+
     // global variables
     var renderer;
     var scene;
@@ -26,7 +36,14 @@
         scene = new THREE.Scene();
 
         // create a camera, which defines where we're looking at.
-        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+//        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera = new THREE.PerspectiveCamera();
+        camera.fov = 45;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.near = 0.1;
+        camera.far = 1000;
+
+        camera.updateProjectionMatrix();
 
         // create a render, sets the background color and the size
         renderer = new THREE.WebGLRenderer();
@@ -45,6 +62,8 @@
         camera.position.x = 15;
         camera.position.y = 16;
         camera.position.z = 13;
+
+        // point to target
         camera.lookAt(scene.position);
 
         // add the output of the renderer to the html element
@@ -53,6 +72,19 @@
         control = new function() {
             this.rotationSpeed = 0.005;
             this.scale = 1;
+            this.aspect = camera.aspect;
+            this.far = camera.far;
+            this.near = camera.near;
+            this.fov = camera.fov;
+
+            this.updateCamera = function() {
+                camera.fov = control.fov;
+                camera.aspect = control.aspect;
+                camera.near = control.near;
+                camera.far = control.far;
+
+                camera.updateProjectionMatrix();
+            }
         };
         addControls(control);
 
@@ -64,6 +96,10 @@
         var gui = new dat.GUI();
         gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
         gui.add(controlObject, 'scale', 0.01, 2);
+        gui.add(controlObject, 'fov',0,180).onChange(control.updateCamera);
+        gui.add(controlObject, 'aspect',0,4).onChange(control.updateCamera);
+        gui.add(controlObject, 'near',0,40).onChange(control.updateCamera);
+        gui.add(controlObject, 'far',0,1000).onChange(control.updateCamera);
     }
 
     function render() {

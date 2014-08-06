@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>3.01 - Camera follows object</title>
+    <title>03.08 - Rotate the camera around the scene</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <style>
@@ -30,42 +30,69 @@
 
         // position and point the camera to the center of the scene
         camera.position.x = 15;
-        camera.position.y = 6;
-        camera.position.z = 15;
+        camera.position.y = 16;
+        camera.position.z = 13;
         camera.lookAt(scene.position);
 
         // create a render, sets the background color and the size
         renderer = new THREE.WebGLRenderer();
         renderer.setClearColor(0x000000, 1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMapEnabled = true;
 
+        var ambientLight = new THREE.AmbientLight(0x090909);
+        scene.add(ambientLight);
 
         var spotLight = new THREE.SpotLight();
-        spotLight.position.set(0,80,30);
+        spotLight.position.set(10,80,30);
         spotLight.castShadow = true;
         scene.add(spotLight);
+
+
+        // add elements
+        addFloor();
+        addCube();
+
+
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-
-        addFloor();
-        addBouncingSphere();
-        addCube();
+        control = new function() {
+            this.rotSpeed = 0.005;
+            this.scale = 1;
+        };
+        addControls(control);
 
         // call the render function
         render();
     }
 
-    function addBouncingSphere() {
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotSpeed', -0.1, 0.1);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        var x = camera.position.x;
+        var z = camera.position.z;
+
+        camera.position.x = x * Math.cos(control.rotSpeed) + z * Math.sin(control.rotSpeed);
+        camera.position.z = z * Math.cos(control.rotSpeed) - x * Math.sin(control.rotSpeed);
+
+        camera.lookAt(scene.position);
+
+        requestAnimationFrame(render);
+    }
+
+    function addSphere() {
         var sphereGeometry = new THREE.SphereGeometry(1.5,20,20);
         var matProps = {
 
-        specular: '#a9fcff',
-                color: '#00abb1',
-                emissive: '#006063',
-                shininess: 10
+            specular: '#a9fcff',
+            color: '#00abb1',
+            emissive: '#006063',
+            shininess: 10
         }
 
         var sphereMaterial = new THREE.MeshPhongMaterial(matProps);
@@ -90,25 +117,13 @@
     }
 
     function addCube() {
-        var cubeGeometry = new THREE.BoxGeometry(2.5,4.5,20);
+        var cubeGeometry = new THREE.BoxGeometry(2.5,4.5,10);
         var cubeMaterial = new THREE.MeshLambertMaterial({color:0xff0000});
         var cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cubeMesh.castShadow=true;
         cubeMesh.receiveShadow=true;
         cubeMesh.position.z=-5;
         scene.add(cubeMesh);
-    }
-
-    var step=0;
-    function render() {
-        var sphere = scene.getObjectByName('sphere');
-        renderer.render(scene, camera);
-
-        camera.lookAt(sphere.position);
-        step+=0.02;
-        sphere.position.x = 0+( 10*(Math.cos(step)));
-        sphere.position.y = 0.75*Math.PI/2 +( 6*Math.abs(Math.sin(step)));
-        requestAnimationFrame(render);
     }
 
     // calls the init function when the window is done loading.

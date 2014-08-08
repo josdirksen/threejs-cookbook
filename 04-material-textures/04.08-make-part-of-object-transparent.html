@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>04.06 - Use separate materials for faces</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // use clock from http://saturnboy.com/2013/10/html5-canvas-clock/
+    // draw a clock on all sides of a cube
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xffffff, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // create a cube and add to scene
+        var sphereGeometry = new THREE.SphereGeometry(6, 20, 20);
+
+        var mat = new THREE.MeshPhongMaterial();
+        mat.map = new THREE.ImageUtils.loadTexture("../assets/textures/partial-transparency.png");
+        mat.shading = THREE.SmoothShading;
+        mat.transparent = true;
+        mat.side = THREE.DoubleSide;
+        mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
+        mat.map.repeat.set( 8, 8 );
+        mat.depthWrite = false;
+        mat.color = new THREE.Color(0xff0000);
+
+        console.log(mat);
+
+
+
+
+        var sphere = new THREE.Mesh(sphereGeometry, mat);
+        sphere.name='sphere';
+        scene.add(sphere);
+
+//        addFloor();
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.DirectionalLight(0xffffff);
+        spotLight.position.set(10, 20, 20);
+
+        scene.add(spotLight);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 15;
+        camera.position.y = 16;
+        camera.position.z = 13;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotationSpeed = 0.005;
+            this.scale = 1;
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+
+    function addFloor() {
+        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorMaterial = new THREE.MeshPhongMaterial();
+        floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
+
+        floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+        floorMaterial.map.repeat.set( 8, 8 );
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -0.5*Math.PI;
+        scene.add(floorMesh);
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'scale', 0.01, 2);
+    }
+
+    function render() {
+
+        renderer.render(scene, camera);
+        scene.getObjectByName('sphere').rotation.x+=control.rotationSpeed;
+        scene.getObjectByName('sphere').scale.set(control.scale,control.scale,control.scale);
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

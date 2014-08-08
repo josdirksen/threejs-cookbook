@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>04.01 add depth to mesh with bump maps</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+    var cube, bumpCube;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x272727, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // create a bumpcube and add to scene
+        var cubeGeometry = new THREE.BoxGeometry(15, 15, 15);
+        var cubeBumpMaterial = new THREE.MeshPhongMaterial();
+
+        cubeBumpMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399.jpg");
+        cubeBumpMaterial.bumpMap = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399-bump-map.jpg");
+
+        bumpCube = new THREE.Mesh(cubeGeometry, cubeBumpMaterial);
+        bumpCube.name='bumpCube';
+        bumpCube.position.x=13;
+        bumpCube.position.z=-5;
+        scene.add(bumpCube);
+
+        // create a normal cube and add to scene
+        var cubeMaterial = new THREE.MeshPhongMaterial();
+
+        cubeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399.jpg");
+
+
+        cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.name='bumpCube';
+        cube.position.x=-13;
+        cube.position.z=-5;
+        scene.add(cube);
+
+//        var ambiLight = new THREE.AmbientLight(0xaaaaaa);
+//        scene.add(ambiLight);
+
+        var dirLight = new THREE.DirectionalLight(0xffffff);
+        dirLight.position.set(20, 20, 20);
+        scene.add(dirLight);
+
+        var dirLight2 = new THREE.DirectionalLight(0xffffff);
+        dirLight2.position.set(-20, 20, 20);
+        scene.add(dirLight2);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 0;
+        camera.position.y = 30;
+        camera.position.z = 40;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotSpeed = 0.005;
+            this.bumpScale = cubeBumpMaterial.bumpScale;
+
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'bumpScale', -4, 4).step(0.1);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+
+        cube.rotation.y+=control.rotSpeed;
+        bumpCube.rotation.y-=control.rotSpeed;
+
+        bumpCube.material.bumpScale = control.bumpScale;
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

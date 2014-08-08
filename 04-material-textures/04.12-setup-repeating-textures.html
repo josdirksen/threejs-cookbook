@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>04.01 add depth to mesh with normal maps</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // use clock from http://saturnboy.com/2013/10/html5-canvas-clock/
+    // draw a clock on all sides of a cube
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xcccccc, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+        // lights
+        var dirLight = new THREE.SpotLight();
+        dirLight.position.set(25,46,33);
+        scene.add(dirLight);
+
+        // create a cube and add to scene
+        var cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
+        var cubeMaterial = new THREE.MeshPhongMaterial();
+        cubeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/webtreats_metal_6-512px.jpg");
+        cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+        cubeMaterial.map.repeat.set( 2, 2 );
+        cubeMaterial.side = THREE.DoubleSide;
+
+        cubeMaterial.transparent = true;
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.name='cube';
+        scene.add(cube);
+
+
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 15;
+        camera.position.y = 16;
+        camera.position.z = 13;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotationSpeed = 0.005;
+            this.scale = 1;
+            this.repeatX = 2;
+            this.repeatY = 2;
+
+            this.changeRepeat = function() {
+                var map = scene.getObjectByName('cube').material.map;
+                map.repeat.set( control.repeatX, control.repeatY );
+            }
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'scale', 0.01, 2);
+        gui.add(controlObject, 'repeatX', -4, 4).step(0.1).onChange(control.changeRepeat);
+        gui.add(controlObject, 'repeatY', -4, 4).step(0.1).onChange(control.changeRepeat);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

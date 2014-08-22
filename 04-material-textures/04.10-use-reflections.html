@@ -43,12 +43,12 @@
         // point to the photos
         // two ways, you can also use the THREE.UVMapping to load a single 360 degrees
         var urls = [
-            '../assets/cubemap/flowers/right',
-            '../assets/cubemap/flowers/left',
-            '../assets/cubemap/flowers/top',
-            '../assets/cubemap/flowers/bottom',
-            '../assets/cubemap/flowers/front',
-            '../assets/cubemap/flowers/back'
+            '../assets/cubemap/flowers/right.png',
+            '../assets/cubemap/flowers/left.png',
+            '../assets/cubemap/flowers/top.png',
+            '../assets/cubemap/flowers/bottom.png',
+            '../assets/cubemap/flowers/front.png',
+            '../assets/cubemap/flowers/back.png'
         ];
 
 
@@ -80,7 +80,7 @@
         var cubeGeometry = new THREE.BoxGeometry(5,5,5);
         var cylinderGeometry = new THREE.CylinderGeometry(2,4,10, 20, 20, false);
 
-        var envMaterial = new THREE.MeshBasicMaterial({envMap:cubemap, side: THREE.DoubleSide});
+        var envMaterial = new THREE.MeshBasicMaterial({envMap:cubemap});
 //        envMaterial.refractionRatio = 0.95;
 
         var sphere = new THREE.Mesh(sphereGeometry, envMaterial);

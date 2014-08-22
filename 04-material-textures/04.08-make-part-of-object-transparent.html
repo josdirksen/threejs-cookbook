@@ -37,17 +37,16 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var sphereGeometry = new THREE.SphereGeometry(6, 20, 20);
+        var sphereGeometry = new THREE.CubeGeometry(6, 6, 6);
 
         var mat = new THREE.MeshPhongMaterial();
         mat.map = new THREE.ImageUtils.loadTexture("../assets/textures/partial-transparency.png");
         mat.shading = THREE.SmoothShading;
         mat.transparent = true;
-        mat.side = THREE.DoubleSide;
         mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
-        mat.map.repeat.set( 8, 8 );
+        mat.map.repeat.set( 4, 4 );
         mat.depthWrite = false;
-        mat.color = new THREE.Color(0xff0000);
+        mat.color = new THREE.Color(0x00ff00);
 
         console.log(mat);
 

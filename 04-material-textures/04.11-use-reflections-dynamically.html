@@ -53,10 +53,6 @@
             '../assets/cubemap/car/back'
         ];
 
-        cubeCamera = new THREE.CubeCamera( 0.1, 20000, 256 );
-        cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
-        scene.add( cubeCamera );
-
         // create the cubemap
         var cubemap = THREE.ImageUtils.loadTextureCube(urls);
         cubemap.format = THREE.RGBFormat;
@@ -78,6 +74,10 @@
         // create the skybox
         var skybox = new THREE.Mesh( new THREE.BoxGeometry( 10000, 10000, 10000 ), material );
         scene.add(skybox);
+
+        cubeCamera = new THREE.CubeCamera( 0.1, 20000, 256 );
+        cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+        scene.add( cubeCamera );
 
         // create a sphere and add to scene
         var sphereGeometry = new THREE.SphereGeometry(4,15,15);

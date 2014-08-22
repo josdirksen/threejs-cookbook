@@ -41,12 +41,12 @@
         orthoCamera.position.y = 0;
         orthoCamera.position.z = 0;
 
+        orthoScene = new THREE.Scene();
+        persScene = new THREE.Scene();
+
         persCamera = new THREE.PerspectiveCamera( 60, WIDTH / HEIGHT, 1, 2100 );
         persScene.add(persCamera);
         persCamera.position.set(10,16,20);
-
-        orthoScene = new THREE.Scene();
-        persScene = new THREE.Scene();
 
         persCamera.lookAt(persScene.position);
 

@@ -36,17 +36,17 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.CylinderGeometry(3, 5, 10,20);
+        var cylinderGeometry = new THREE.CylinderGeometry(3, 5, 10,20);
 
         // create the materials
         var material1 = new THREE.MeshLambertMaterial({color:0xff0000, transparent: true, opacity: 0.7});
         var material2 = new THREE.MeshBasicMaterial({wireframe:true});
 
 
-        var cube = THREE.SceneUtils.createMultiMaterialObject(cubeGeometry, [material1, material2]);
-        cube.name='sphere';
-        scene.add(cube);
-        cube.position.y=3;
+        var cylinder = THREE.SceneUtils.createMultiMaterialObject(cylinderGeometry, [material1, material2]);
+        cylinder.name='sphere';
+        scene.add(cylinder);
+        cylinder.position.y=3;
 
         addFloor();
 
@@ -65,11 +65,6 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
-            this.rotationSpeed = 0.005;
-            this.scale = 1;
-        };
-        addControls(control);
 
         // call the render function
         render();
@@ -89,11 +84,6 @@
         scene.add(floorMesh);
     }
 
-    function addControls(controlObject) {
-        var gui = new dat.GUI();
-        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
-        gui.add(controlObject, 'scale', 0.01, 2);
-    }
 
     function render() {
         renderer.render(scene, camera);

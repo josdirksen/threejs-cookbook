@@ -37,10 +37,13 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
-        var cubeMaterial = new THREE.MeshNormalMaterial();
+        var cubeGeometry = new THREE.BoxGeometry(10, 4, 10);
+        var cubeMaterial = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture("../assets/textures/debug.png")});
+        cubeMaterial.blending = THREE.SubtractiveBlending;
         cubeMaterial.transparent = true;
+
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+
         cube.name='cube';
         scene.add(cube);
 
@@ -50,12 +53,40 @@
         camera.position.z = 13;
         camera.lookAt(scene.position);
 
+        var ambientLight = new THREE.AmbientLight(0x191919);
+        scene.add(ambientLight);
+
+        var spotLight = new THREE.SpotLight();
+        spotLight.position.set(10,80,30);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        addFloor();
+
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
         control = new function() {
             this.rotationSpeed = 0.005;
             this.scale = 1;
+
+            this.normal = function() {
+                cubeMaterial.blending = THREE.NormalBlending;
+            }
+
+
+            this.additive = function() {
+                cubeMaterial.blending = THREE.AdditiveBlending;
+            }
+
+            this.subtractive = function() {
+                cubeMaterial.blending = THREE.SubtractiveBlending;
+            }
+
+            this.multiply = function() {
+                cubeMaterial.blending = THREE.MultiplyBlending;
+            }
+
         };
         addControls(control);
 
@@ -65,14 +96,30 @@
 
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
-        gui.add(controlObject, 'scale', 0.01, 2);
+        gui.add(controlObject, 'normal');
+        gui.add(controlObject, 'additive');
+        gui.add(controlObject, 'subtractive');
+        gui.add(controlObject, 'multiply');
+    }
+
+    function addFloor() {
+        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorMaterial = new THREE.MeshPhongMaterial();
+        floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png");
+
+        floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+        floorMaterial.map.repeat.set( 4, 4 );
+        floorMaterial.side = THREE.DoubleSide;
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -0.5*Math.PI;
+        scene.add(floorMesh);
     }
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+//        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
+//        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
 
         requestAnimationFrame(render);
     }

@@ -48,9 +48,7 @@
         cubeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/webtreats_metal_6-512px.jpg");
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
         cubeMaterial.map.repeat.set( 2, 2 );
-        cubeMaterial.side = THREE.DoubleSide;
 
-        cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.name='cube';
         scene.add(cube);

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>05.10 - Make a light follow an object</title>
+    <title>05.10 - Custom fragment shader</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <style>
@@ -11,18 +11,47 @@
         }
     </style>
 </head>
+
+<script id="simple-fragment" type="x-shader/x-fragment">
+    varying vec3 vNormal;
+
+    uniform float delta;
+    uniform float mNear;
+    uniform float mFar;
+
+    float PI = 3.14159265358979323846264;
+
+    void main()
+    {
+        float depth = gl_FragCoord.z / gl_FragCoord.w;
+        float depthColor = smoothstep( mNear, mFar, depth );
+
+        gl_FragColor = vec4(abs(sin(delta + 0.7*PI) + cos(normalize(vNormal).x)/2.0) - depthColor,
+                            abs(sin(delta + 1.0*PI) + cos(normalize(vNormal).y)/2.0) - depthColor,
+                            abs(sin(delta + 1.2*PI) + cos(normalize(vNormal).z)/2.0) - depthColor, 1.0);
+
+
+
+    }
+</script>
+
 <script>
 
-//    Show how to use an ambient light to soften the harsh directional lighting
+    //    Show how to setup a spotlight
+    //    in the threre is more, also show debug camera for spotlight.
+    //    in the how it works show the various properties.
 
     // global variables
     var renderer;
     var scene;
     var camera;
 
+    var uniforms = {};
     var control;
 
     function init() {
+
+
 
         // create a scene, that will hold all our elements such as objects, cameras and lights.
         scene = new THREE.Scene();
@@ -35,11 +64,27 @@
         renderer.setClearColor(0x000000, 1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
+
+        // reuse the fragment shader stuff from the lambert material
+        var basicShader = THREE.ShaderLib['normal'];
+
+        uniforms.delta = {type: 'f', value: 0.0};
+        uniforms.mNear = { type: "f", value: 1.0 };
+        uniforms.mFar = { type: "f", value: 60.0 };
+
+
+        // since we use a texture, we need to inform three.js
+        var material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: basicShader.vertexShader,
+            fragmentShader: document.
+                    getElementById('simple-fragment').text,
+        });
+
+
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
-        var cubeMaterial = new THREE.MeshNormalMaterial();
-        cubeMaterial.transparent = true;
-        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        var cubeGeometry = new THREE.BoxGeometry(5, 15, 5);
+        var cube = new THREE.Mesh(cubeGeometry, material);
         cube.name='cube';
         scene.add(cube);
 
@@ -72,6 +117,8 @@
         renderer.render(scene, camera);
         scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
         scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+
+        uniforms.delta.value += 0.005;
 
         requestAnimationFrame(render);
     }

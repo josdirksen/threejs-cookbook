@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>05.03 - Create a sun light source</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/OBJLoader.js"></script>
+    <script src="../libs/MTLLoader.js"></script>
+    <script src="../libs/OBJMTLLoader.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+//    Show how to do this with a THREE.HemisphereLight
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+    var orbit;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x6698FF, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMapEnabled = true;
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 25;
+        camera.position.y = 26;
+        camera.position.z = 23;
+        camera.lookAt(scene.position);
+
+        orbit = new THREE.OrbitControls(camera);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        var loader = new THREE.OBJMTLLoader();
+        loader.load("../assets/models/cow/cowTM08New00RTime02.obj", "../assets/models/cow/cowTM08New00RTime02.mtl", function(cow) {
+
+            cow.scale.set(3,3,3);
+            cow.translateY(9);
+
+            // small fix of the material for better import
+            cow.children[1].children[1].geometry.computeVertexNormals();
+            cow.children[1].children[1].geometry.computeFaceNormals();
+            cow.children[1].children[1].geometry.computeTangents();
+            cow.children[1].children[1].material.opacity=1;
+            cow.children[1].children[1].material.shading = THREE.SmoothShading;
+            cow.children[1].children[1].castShadow = true;
+
+            scene.add(cow);
+        });
+
+        addHemisphereLight(scene);
+        addDirectionalLight(scene);
+        addFloor();
+
+
+        control = new function() {
+            this.hemiLight = true;
+            this.dirLight = true;
+            this.rotSpeed = 0.01;
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+
+function addFloor() {
+    var floorGeometry = new THREE.PlaneGeometry(200,200,20,20);
+    var floorMaterial = new THREE.MeshPhongMaterial();
+    floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/06_DIFFUSE.jpg");
+    floorMaterial.normalMap = THREE.ImageUtils.loadTexture("../assets/textures/06_NORMAL.jpg");
+
+
+
+    floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+    floorMaterial.map.repeat.set( 4, 4 );
+    floorMaterial.normalMap.wrapS = floorMaterial.normalMap.wrapT = THREE.RepeatWrapping;
+//    floorMaterial.normalMap.repeat.set( 4, 4 );
+
+
+    var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+    floorMesh.receiveShadow = true;
+    floorMesh.rotation.x = -0.5*Math.PI;
+    floorMesh.name = 'floor';
+    scene.add(floorMesh);
+}
+
+function addHemisphereLight(scene)  {
+    var hemiLight = new THREE.HemisphereLight( 0xff4444, 0x44ff44, 0.6 );
+    hemiLight.position.set( 0, 500, 0 );
+
+    hemiLight.name = 'hemiLight';
+    scene.add( hemiLight );
+}
+
+function addDirectionalLight(scene) {
+    var directionalLight = new THREE.DirectionalLight();
+    directionalLight.position = new THREE.Vector3(70,40,50);
+    directionalLight.castShadow = true;
+    directionalLight.shadowCameraVisible = false;
+    directionalLight.shadowCameraNear = 25;
+    directionalLight.shadowCameraFar = 200;
+    directionalLight.shadowCameraLeft = -50;
+    directionalLight.shadowCameraRight = 50;
+    directionalLight.shadowCameraTop = 50;
+    directionalLight.shadowCameraBottom = -50;
+    directionalLight.shadowMapWidth = 2048;
+    directionalLight.shadowMapHeight = 2048;
+
+    directionalLight.visible=true;
+
+    directionalLight.name = 'dirLight';
+    scene.add(directionalLight);
+    }
+
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'hemiLight').onChange(function(e) {scene.getObjectByName('hemiLight').visible=e});
+        gui.add(controlObject, 'dirLight').onChange(function(e) {scene.getObjectByName('dirLight').visible=e});;
+
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        orbit.update();
+
+
+        var light = scene.getObjectByName('dirLight');
+
+        var x = light.position.x;
+        var z = light.position.z;
+
+        light.position.x = x * Math.cos(control.rotSpeed) + z * Math.sin(control.rotSpeed);
+        light.position.z = z * Math.cos(control.rotSpeed) - x * Math.sin(control.rotSpeed);
+
+        light.lookAt(scene.position);
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

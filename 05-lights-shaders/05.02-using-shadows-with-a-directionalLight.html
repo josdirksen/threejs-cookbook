@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>05.02 - Using shadows with a directional light</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+    <script src="../libs/OBJLoader.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    //    Show how to use an ambient light to soften the harsh directional lighting
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+    var monkey;
+
+    var control;
+    var orbit;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xaaaaaa, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMapEnabled = true;
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 65;
+        camera.position.y = 66;
+        camera.position.z = 63;
+        camera.lookAt(scene.position);
+
+        orbit = new THREE.OrbitControls(camera);
+
+        var loader = new THREE.JSONLoader();
+        loader.load("../assets/models/monkey.js",function(model) {
+            monkey = new THREE.Mesh(model, new THREE.MeshPhongMaterial({
+                color: 0xffff33,
+            }));
+            monkey.scale.set(10,10,10);
+            monkey.position.set(-5,0,0);
+            monkey.castShadow = true;
+            scene.add(monkey);
+        });
+
+        var cubeGeom = new THREE.BoxGeometry(4,8,14);
+        var cubeMesh = new THREE.Mesh(cubeGeom, new THREE.MeshPhongMaterial());
+        cubeMesh.position.set(20,1,10);
+        cubeMesh.castShadow = true;
+        cubeMesh.receiveShadow = true;
+        scene.add(cubeMesh);
+
+
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.castShadow = true;
+            this.shadowCameraVisible = false;
+
+            this.rotSpeed = 0.01;
+        };
+        addControls(control);
+
+
+        addFloor();
+        addDirectionalLight(scene);
+        addAmbientLight(scene);
+
+        // call the render function
+        render();
+    }
+
+    function addAmbientLight(scene) {
+        var ambientLight = new THREE.AmbientLight(0x332222);
+        ambientLight.name = 'ambientLight';
+        scene.add(ambientLight);
+    }
+
+    function addDirectionalLight(scene) {
+        var directionalLight = new THREE.DirectionalLight();
+        directionalLight.position = new THREE.Vector3(70,40,-50);
+        directionalLight.castShadow = true;
+        directionalLight.shadowCameraVisible = false;
+        directionalLight.shadowCameraNear = 25;
+        directionalLight.shadowCameraFar = 200;
+        directionalLight.shadowCameraLeft = -50;
+        directionalLight.shadowCameraRight = 50;
+        directionalLight.shadowCameraTop = 50;
+        directionalLight.shadowCameraBottom = -50;
+        directionalLight.shadowMapWidth = 2048;
+        directionalLight.shadowMapHeight = 2048;
+
+        directionalLight.name = 'dirLight';
+        scene.add(directionalLight);
+    }
+
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+
+        gui.add(controlObject, 'castShadow');
+        gui.add(controlObject, 'shadowCameraVisible');
+
+
+
+    }
+
+    function addFloor() {
+        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorMaterial = new THREE.MeshPhongMaterial();
+        floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399.jpg");
+        floorMaterial.bumpMap = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399-bump-map.jpg");
+
+        floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+        floorMaterial.map.repeat.set( 4, 4 );
+        floorMaterial.bumpMap.wrapS = floorMaterial.bumpMap.wrapT = THREE.RepeatWrapping;
+        floorMaterial.bumpMap.repeat.set( 4, 4 );
+
+
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.name = 'floor';
+        scene.add(floorMesh);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+        orbit.update();
+
+        var light = scene.getObjectByName('dirLight');
+
+        var x = light.position.x;
+        var z = light.position.z;
+
+        light.position.x = x * Math.cos(control.rotSpeed) + z * Math.sin(control.rotSpeed);
+        light.position.z = z * Math.cos(control.rotSpeed) - x * Math.sin(control.rotSpeed);
+
+        light.lookAt(scene.position);
+
+        if (monkey) {
+            monkey.rotation.y -= 0.01;
+            monkey.material.needsUpdate = true;
+        }
+
+        var floor = scene.getObjectByName('floor');
+        floor.material.needsUpdate = true;
+
+        var directionalLight = scene.getObjectByName('dirLight');
+        directionalLight.castShadow = control.castShadow;
+        directionalLight.shadowCameraVisible = control.shadowCameraVisible;
+
+        scene.getObjectByName('dirLight').shadowCamera.updateProjectionMatrix();
+
+        requestAnimationFrame(render);
+    }
+
+
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+
+    window.addEventListener('resize', onResize, false);
+
+</script>
+<body>
+</body>
+</html>

@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>05.02 - Add shadows to a scene</title>
+    <title>01.07 - Control variables</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <style>
         body {
             margin: 0;
-            overflow: hidden;
+            /*overflow: hidden;*/
         }
     </style>
 </head>
 <script>
-
-//    Show how to use an ambient light to soften the harsh directional lighting
 
     // global variables
     var renderer;
@@ -31,7 +29,7 @@
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
         // create a render, sets the background color and the size
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
         renderer.setClearColor(0x000000, 1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -51,12 +49,15 @@
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
+        renderer.domElement.id="blaat";
 
         control = new function() {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
         addControls(control);
+
+
 
         // call the render function
         render();
@@ -76,8 +77,27 @@
         requestAnimationFrame(render);
     }
 
+
+    function copyCanvas(e) {
+        var imgData, imgNode;
+
+        if ( e.which !== 80 ) {
+            return;
+        } else {
+            imgData = renderer.domElement.toDataURL();
+        }
+
+        // create a new image and add to the document
+        imgNode = document.createElement("img");
+        imgNode.src = imgData;
+        document.body.appendChild(imgNode);
+    }
+
+
     // calls the init function when the window is done loading.
     window.onload = init;
+
+    window.addEventListener("keyup", copyCanvas);
 
 </script>
 <body>

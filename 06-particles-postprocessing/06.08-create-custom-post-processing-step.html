@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>06.07 - Setup basic post processing</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/chroma.min.js"></script>
+
+    <script src="../libs/postprocessing/CopyShader.js"></script>
+    <script src="../libs/postprocessing/DotScreenShader.js"></script>
+    <script src="../libs/postprocessing/EffectComposer.js"></script>
+    <script src="../libs/postprocessing/RenderPass.js"></script>
+    <script src="../libs/postprocessing/ShaderPass.js"></script>
+    <script src="../libs/postprocessing/MaskPass.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<script id="hexagonVertexShader" type="x-shader/x-vertex">
+    varying vec2 texCoord;
+
+    void main() {
+      texCoord = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+</script>
+
+<!--Adopted from: https://github.com/evanw/glfx.js-->
+<script id="hexagonFragmentShader" type="x-shader/x-fragment">
+    uniform sampler2D tDiffuse;
+
+    uniform vec2 center;
+    uniform float scale;
+    uniform vec2 texSize;
+
+    varying vec2 texCoord;
+
+    void main() {
+    vec2 tex = (texCoord * texSize - center) / scale;
+    tex.y /= 0.866025404;
+    tex.x -= tex.y * 0.5;
+
+    vec2 a;
+    if (tex.x + tex.y - floor(tex.x) - floor(tex.y) < 1.0) a = vec2(floor(tex.x), floor(tex.y));
+    else a = vec2(ceil(tex.x), ceil(tex.y));
+
+    vec2 b = vec2(ceil(tex.x), floor(tex.y));
+    vec2 c = vec2(floor(tex.x), ceil(tex.y));
+
+    vec3 TEX = vec3(tex.x, tex.y, 1.0 - tex.x - tex.y);
+    vec3 A = vec3(a.x, a.y, 1.0 - a.x - a.y);
+    vec3 B = vec3(b.x, b.y, 1.0 - b.x - b.y);
+    vec3 C = vec3(c.x, c.y, 1.0 - c.x - c.y);
+
+    float alen = length(TEX - A);
+    float blen = length(TEX - B);
+    float clen = length(TEX - C);
+
+    vec2 choice;
+    if (alen < blen) {
+    if (alen < clen) choice = a;
+    else choice = c;
+    } else {
+    if (blen < clen) choice = b;
+    else choice = c;
+    }
+
+    choice.x += choice.y * 0.5;
+    choice.y *= 0.866025404;
+    choice *= scale / texSize;
+    gl_FragColor = texture2D(tDiffuse, choice + center / texSize);
+    }
+</script>
+
+<script id="basic-v" type="x-shader/x-fragment">
+    varying vec2 texCoord;
+
+    void main() {
+
+    texCoord = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+    }
+</script>
+
+<script id="basic-f" type="x-shader/x-fragment">
+    uniform float opacity;
+
+    uniform sampler2D tDiffuse;
+
+    varying vec2 texCoord;
+
+    void main() {
+
+    vec4 texel = texture2D( tDiffuse, texCoord );
+    gl_FragColor = texel;
+
+    }
+</script>
+
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+
+    var control;
+    var group;
+
+    var scale = chroma.scale(['red', 'yellow']);
+
+    var composer;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+//        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 4000);
+        camera.position.set(500, 400, 500);
+        camera.lookAt(new THREE.Vector3(00,0,00));
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        var dirLight = new THREE.DirectionalLight();
+        scene.add(dirLight);
+        dirLight.position.set(500,200,300);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotationSpeed=0.0005;
+        };
+
+        addControls(control);
+
+        group = new THREE.Object3D();
+
+        // add a large number of cubes
+        for (var x = -15 ; x < 15 ; x++)  {
+            for (var y = -15 ; y < 15 ; y++)  {
+                addCube(x, y, group);
+            }
+        }
+
+        group.position.x-= (30*20)/2;
+        group.position.z-= 0
+        scene.add(group);
+
+
+        // now setup the effectcomposer loop
+        composer = new THREE.EffectComposer( renderer );
+
+        var renderPass = new THREE.RenderPass( scene, camera );
+        composer.addPass( renderPass  );
+
+        var customShader = {
+            uniforms: {
+                "tDiffuse": { type: "t", value: null},
+                "scale":    { type: "f", value: 1.0 },
+                "texSize":  { type: "v2", value: new THREE.Vector2( 50, 50 ) },
+                "center":   { type: "v2", value: new THREE.Vector2( 0.5, 0.5 ) },
+            },
+            vertexShader: document.
+                    getElementById('hexagonVertexShader').text,
+            fragmentShader: document.
+                    getElementById('hexagonFragmentShader').text
+        };
+
+        var effect = new THREE.ShaderPass( customShader );
+        effect.renderToScreen = true;
+        composer.addPass( effect );
+
+        // call the render function
+        render();
+    }
+
+    function addCube(x, y, group) {
+
+        // create a cube and add to scene
+        var cubeGeometry = new THREE.BoxGeometry(50, Math.random()*75+25, 50);
+        var cubeMaterial = new THREE.MeshLambertMaterial();
+        cubeMaterial.color = new THREE.Color(scale(Math.random()).hex());
+        cubeMaterial.transparent = true;
+        cubeMaterial.opacity = Math.random()*0.2+0.8;
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.name='cube';
+        cube.position.x=60 * x;
+        cube.position.y=cubeGeometry.parameters.height/2;
+        cube.position.z=60 * y;
+
+        group.add(cube);
+
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+
+    }
+
+    function render() {
+        var x = camera.position.x;
+        var z = camera.position.z;
+
+//        camera.position.x = x * Math.cos(control.rotationSpeed) + z * Math.sin(control.rotationSpeed);
+//        camera.position.z = z * Math.cos(control.rotationSpeed) - x * Math.sin(control.rotationSpeed);
+<!---->
+//        camera.lookAt(scene.position);
+
+        group.rotation.y+=control.rotationSpeed;
+
+        composer.render();
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

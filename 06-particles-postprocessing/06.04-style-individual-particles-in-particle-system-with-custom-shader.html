@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>06.03 - Style the particles in a particle system</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+    <script src="../libs/OBJLoader.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<script id="particleVertexShader" type="x-shader/x-vertex">
+    precision highp float;
+    precision highp int;
+
+    attribute vec3 color;
+    attribute float pSize;
+    attribute float pOpacity;
+
+    uniform float size;
+    uniform float scale;
+
+    varying vec3 vColor;
+    varying float vOpacity;
+
+
+    void main() {
+
+        vColor = color;
+        vOpacity = pOpacity;
+
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        gl_PointSize = 2.0 * pSize * size * ( scale / length( mvPosition.xyz ) );
+        gl_Position = projectionMatrix * mvPosition;
+    }
+</script>
+
+<script id="particleFragmentShader" type="x-shader/x-fragment">
+    precision highp float;
+    precision highp int;
+
+    uniform vec3 psColor;
+    uniform float opacity;
+
+    varying vec3 vColor;
+    varying float vOpacity;
+
+    uniform sampler2D map;
+
+    void main() {
+        gl_FragColor = vec4( psColor, vOpacity );
+        gl_FragColor = gl_FragColor * texture2D( map, vec2( gl_PointCoord.x, 1.0 - gl_PointCoord.y ) );
+        gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );
+    }
+</script>
+
+
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+    var orbit;
+
+    var ps;
+
+    function init() {
+
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 20;
+        camera.position.y = 20;
+        camera.position.z = 20;
+        camera.lookAt(scene.position);
+
+        orbit = new THREE.OrbitControls(camera);
+
+        setupParticleSystem(100, 100);
+
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        // call the render function
+        render();
+    }
+
+    function setupParticleSystem(x, y) {
+
+        var geometry = new THREE.Geometry();
+        var pSize = [];
+        var pOpacity = [];
+
+        // create the geometry and set custom values
+        for (var i = 0 ; i < x ; i++) {
+            for (var j = 0 ; j < y ; j++) {
+                var v = new THREE.Vector3();
+                v.x = i / 10;
+                v.y = (Math.sin(i/200 * Math.PI*2) + Math.cos(j/50 * Math.PI) + Math.sin((j+i)/40 * Math.PI))/2;
+                v.z = j / 10;
+
+                // add the vertex
+                geometry.vertices.push(v);
+
+                // add vertex specific color, size and opacity
+                geometry.colors.push(new THREE.Color(v.y,0.5,0.7));
+                pSize.push(Math.random());
+                pOpacity.push(Math.random()/4+0.5);
+            }
+        }
+
+        // define the attributes that get sent to the shader
+        // there should be an attribute for each individual vertex
+        var attributes = {
+            pSize:    {	type: 'f', value: pSize },
+            pOpacity: {	type: 'f', value: pOpacity }
+        };
+
+        // we'll get the basic shader stuff, so we don't have to define all the uniforms oursevles
+        // set all the configuration for the shader here. These apply to all vertices
+        var basicShader = THREE.ShaderLib['particle_basic'];
+        var uniforms = THREE.UniformsUtils.merge([basicShader.uniforms]);
+        uniforms['map'].value = THREE.ImageUtils.loadTexture("../assets/textures/ps_smoke.png");
+        uniforms['size'].value = 100;
+        uniforms['opacity'].value = 0.5;
+        uniforms['psColor'].value = new THREE.Color(0xffffff);
+
+        // Create a shadermaterial and add our shaders and our attributes and uniforms
+        var psMat2 = new THREE.ShaderMaterial({
+            attributes: attributes,
+            uniforms: uniforms,
+            transparent : true,
+            blending : THREE.AdditiveBlending,
+            vertexShader: document.
+                getElementById('particleVertexShader').text,
+            fragmentShader: document.
+                    getElementById('particleFragmentShader').text
+        });
+
+        // Create a new particle system based on the provided geometry
+        // and provided shader material
+        ps = new THREE.ParticleSystem(geometry, psMat2);
+        ps.sortParticles = true;
+
+        // position it in the middle
+        ps.position.x -= x / 20;
+        ps.position.z -= x / 20;
+
+        // add the particle system to the scene
+        scene.add(ps);
+    }
+
+
+    var step = 0;
+    function render() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(render);
+
+
+
+
+        orbit.update();
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

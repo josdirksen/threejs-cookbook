@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>07.01 - Blender physics</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+    var mesh;
+    var animation;
+    var prevTime = Date.now();
+
+    var control;
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x000000, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+//        var dirLight = new THREE.SpotLight();
+//        dirLight.position.set(100,100,100);
+//        scene.add(dirLight);
+
+        var dirLight = new THREE.DirectionalLight();
+        dirLight.angle = 1;
+        dirLight.position.set(120,120,-120);
+        scene.add(dirLight);
+
+
+        var dirLight = new THREE.DirectionalLight();
+        dirLight.angle = 1;
+        dirLight.position.set(120,120,120);
+        scene.add(dirLight);
+
+
+        var planeGeom = new THREE.PlaneGeometry(100,100, 30, 30);
+        var planeMat = new THREE.MeshLambertMaterial({color:0xffffff});
+        planeMat.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
+        var plane = new THREE.Mesh(planeGeom, planeMat);
+        plane.rotation.x = -Math.PI/2;
+        scene.add(plane);
+
+        var loader = new THREE.JSONLoader( true );
+        loader.load( "../assets/models/animation/anim-2.js", function( geometry ) {
+
+            console.log(geometry);
+            geometry.computeVertexNormals();
+            geometry.computeMorphNormals();
+
+            var mat = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide, morphTargets: true , morphNormals: true} );
+            mat.map = THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png");
+            mesh = new THREE.Mesh( geometry, mat);
+//
+            mesh.scale.set( 5.5, 5.5, 5.5 );
+            scene.add( mesh );
+
+
+            animation = new THREE.MorphAnimation( mesh );
+            animation.duration = 10000;
+            animation.play();
+
+        } );
+        // position and point the camera to the center of the scene
+        camera.position.x = 40;
+        camera.position.y = 70;
+        camera.position.z = 100;
+        camera.lookAt(scene.position);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        control = new function() {
+            this.rotationSpeed = 0.005;
+            this.scale = 1;
+        };
+        addControls(control);
+
+        // call the render function
+        render();
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'scale', 0.01, 2);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+
+        if ( animation ) {
+            var time = Date.now();
+            animation.update( time - prevTime );
+            prevTime = time;
+
+
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

@@ -1,0 +1,38 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001 
+# 
+newmtl greatwhiteshark
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.578689 0.575256 0.588761
+Ks 0.100000 0.100000 0.100000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Texture/greatwhiteshark.png
+map_Bump Texture/greatwhiteshark_n.png
+
+
+newmtl greatwhiteshark_eye
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.361352 0.376353 0.652406
+Ks 0.100000 0.100000 0.100000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Texture/greatwhiteshark_Eye.png
+map_Bump Texture/greatwhiteshark_Eye_n.png
+
+
+newmtl greatwhiteshark_teet
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.507019 0.713375 0.446216
+Ks 0.100000 0.100000 0.100000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Texture/greatwhiteshark_teeth.png
+map_Bump Texture/greatwhiteshark_teeth_n.png
+
+

@@ -87,10 +87,10 @@
             imgData = renderer.domElement.toDataURL();
         }
 
-        // create a new image and add to the document
-        imgNode = document.createElement("img");
-        imgNode.src = imgData;
-        document.body.appendChild(imgNode);
+        var link = document.createElement("a");
+        link.download = 'capture.png';
+        link.href = imgData;
+        link.click();
     }
 
 

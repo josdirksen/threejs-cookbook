@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>07.05 - Skeleton animation from Blender</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/dat.gui.min.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<script>
+
+    // global variables
+    var renderer;
+    var scene;
+    var camera;
+    var mesh;
+    var orbit;
+
+
+
+    function init() {
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render, sets the background color and the size
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0x334433, 1.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMapEnabled = true;
+
+        // position and point the camera to the center of the scene
+        camera.position.x = 13;
+        camera.position.y = 6;
+        camera.position.z = 13;
+        camera.lookAt(scene.position);
+
+        orbit = new THREE.OrbitControls(camera);
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        var dirLight = new THREE.DirectionalLight();
+        dirLight.position.set(15,3,-5);
+        scene.add(dirLight);
+
+        var dirLight2 = new THREE.DirectionalLight();
+        dirLight2.position.set(-15,3,-5);
+        scene.add(dirLight2);
+
+
+        var loader = new THREE.JSONLoader();
+        loader.load("../assets/models/bones/crow.js",function(model){
+
+            var mat = new THREE.MeshLambertMaterial({color: 0xf33f33, shading: THREE.FlatShading, skinning:true})
+            mesh = new THREE.SkinnedMesh(model, mat);
+            model.animation = "Crow.ArmatureAction";
+            THREE.AnimationHandler.add(model.animations[0]);
+
+            var animation = new THREE.Animation( mesh, model.animation );
+            animation.play();
+
+
+            // calculate everyting Three.js needs for rendering
+//            model.computeTangents();
+            model.computeFaceNormals();
+            model.computeVertexNormals();
+            model.computeMorphNormals();
+
+            mesh.scale.set(15,15,15);
+
+//            mesh.position = new THREE.Vector3(0,10,0);
+
+            mesh.position.y  =3;
+            scene.add(mesh);
+
+
+//            mesh.playAnimation('animation', 20);
+//            mesh.duration = 10;
+
+            // call the render function
+
+
+            render();
+        });
+
+    }
+
+    function addControls(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
+        gui.add(controlObject, 'scale', 0.01, 2);
+    }
+
+    var t = new THREE.Clock();
+    function render() {
+        renderer.render(scene, camera);
+        THREE.AnimationHandler.update( t.getDelta() );
+
+        requestAnimationFrame(render);
+        orbit.update();
+    }
+
+    // calls the init function when the window is done loading.
+    window.onload = init;
+
+</script>
+<body>
+</body>
+</html>

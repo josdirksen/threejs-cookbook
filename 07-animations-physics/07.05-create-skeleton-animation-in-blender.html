@@ -59,36 +59,17 @@
 
         var loader = new THREE.JSONLoader();
         loader.load("../assets/models/bones/crow.js",function(model){
-
             var mat = new THREE.MeshLambertMaterial({color: 0xf33f33, shading: THREE.FlatShading, skinning:true})
             mesh = new THREE.SkinnedMesh(model, mat);
+
             model.animation = "Crow.ArmatureAction";
             THREE.AnimationHandler.add(model.animations[0]);
-
             var animation = new THREE.Animation( mesh, model.animation );
             animation.play();
 
-
-            // calculate everyting Three.js needs for rendering
-//            model.computeTangents();
-            model.computeFaceNormals();
-            model.computeVertexNormals();
-            model.computeMorphNormals();
-
             mesh.scale.set(15,15,15);
-
-//            mesh.position = new THREE.Vector3(0,10,0);
-
             mesh.position.y  =3;
             scene.add(mesh);
-
-
-//            mesh.playAnimation('animation', 20);
-//            mesh.duration = 10;
-
-            // call the render function
-
-
             render();
         });
 

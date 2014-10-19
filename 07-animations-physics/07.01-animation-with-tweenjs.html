@@ -66,11 +66,12 @@
 
 
     function setupTween() {
-        var tween = new TWEEN.Tween({x:0 , y:1.25, z:0}) // start values
-                .to({x:5, y:15, z:-10}, 5000) // end values and time
+        var tween = new TWEEN.Tween({x:0 , y:1.25, z:0, rot: 0}) // start values
+                .to({x:5, y:15, z:-10, rot: 2*Math.PI}, 5000) // end values and time
                 .easing(TWEEN.Easing.Elastic.InOut)
                 .onUpdate(function() {
                     cube.position.set(this.x, this.y, this.z);
+                    cube.rotation.set(this.rot, this.rot, this.rot);
                 })
                 .repeat(Infinity)
                 .yoyo(true)

@@ -19,12 +19,13 @@
     var scene;
     var camera;
     var cube;
-    var plane;
+
 
     var control;
     var orbit;
 
     // used for drag and drop
+    var plane;
     var selectedObject;
     var projector = new THREE.Projector();
     var offset = new THREE.Vector3();
@@ -144,11 +145,6 @@
     };
 
     document.onmousedown = function(event) {
-        // also disable the orbit controls, since we want to move an object.
-
-
-        // make sure we don't access anything else
-//        event.preventDefault();
 
         // get the mouse positions
         var mouse_x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -178,7 +174,6 @@
             var intersects = raycaster.intersectObject( plane );
             offset.copy( intersects[ 0 ].point ).sub( plane.position );
         }
-
     };
 
     document.onmouseup = function(event) {

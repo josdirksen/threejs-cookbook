@@ -21,7 +21,7 @@
 
     var control;
     var orbit;
-    var horse;
+    var giraffe;
     var helper;
 
     function init() {
@@ -82,26 +82,26 @@
                 mat.side = THREE.DoubleSide;
             });
 
-            horse = new THREE.SkinnedMesh(model, materials[0]);
+            giraffe = new THREE.SkinnedMesh(model, materials[0]);
 
 
-            horse.rotation.x =-0.2;
-            horse.rotation.y =1.5 ;
-            horse.rotation.z =0.2 ;
-            horse.position.y = -5;
-            scene.add(horse);
+            giraffe.rotation.x =-0.2;
+            giraffe.rotation.y =1.5 ;
+            giraffe.rotation.z =0.2 ;
+            giraffe.position.y = -5;
+            scene.add(giraffe);
 
             // set defaults for control object
-            control.neck_rot_x = horse.children[0].children[1].children[0].children[0].rotation.x;
-            control.neck_rot_y = horse.children[0].children[1].children[0].children[0].rotation.y;
-            control.neck_rot_z = horse.children[0].children[1].children[0].children[0].rotation.z;
+            control.neck_rot_x = giraffe.children[0].children[1].children[0].children[0].rotation.x;
+            control.neck_rot_y = giraffe.children[0].children[1].children[0].children[0].rotation.y;
+            control.neck_rot_z = giraffe.children[0].children[1].children[0].children[0].rotation.z;
 
-            control.neck_pos_x = horse.children[0].children[1].children[0].children[0].position.x;
-            control.neck_pos_y = horse.children[0].children[1].children[0].children[0].position.y;
-            control.neck_pos_z = horse.children[0].children[1].children[0].children[0].position.z;
+            control.neck_pos_x = giraffe.children[0].children[1].children[0].children[0].position.x;
+            control.neck_pos_y = giraffe.children[0].children[1].children[0].children[0].position.y;
+            control.neck_pos_z = giraffe.children[0].children[1].children[0].children[0].position.z;
 
 
-            helper = new THREE.SkeletonHelper(horse);
+            helper = new THREE.SkeletonHelper(giraffe);
             helper.visible = false;
             scene.add(helper);
 
@@ -128,22 +128,16 @@
         requestAnimationFrame(render);
 
         // the neck bone
-        horse.children[0].children[1].children[0].children[0].rotation.x = control.neck_rot_x;
-        horse.children[0].children[1].children[0].children[0].rotation.y = control.neck_rot_y;
-        horse.children[0].children[1].children[0].children[0].rotation.z = control.neck_rot_z;
+        giraffe.children[0].children[1].children[0].children[0].rotation.x = control.neck_rot_x;
+        giraffe.children[0].children[1].children[0].children[0].rotation.y = control.neck_rot_y;
+        giraffe.children[0].children[1].children[0].children[0].rotation.z = control.neck_rot_z;
 
-        horse.children[0].children[1].children[0].children[0].position.x = control.neck_pos_x;
-        horse.children[0].children[1].children[0].children[0].position.y = control.neck_pos_y;
-        horse.children[0].children[1].children[0].children[0].position.z = control.neck_pos_z;
-
-        horse.children[0].children[1].children[0].matrixAutoUpdate = true;
-        horse.children[0].children[1].children[0].matrixWorldNeedsUpdate = true;
-
+        giraffe.children[0].children[1].children[0].children[0].position.x = control.neck_pos_x;
+        giraffe.children[0].children[1].children[0].children[0].position.y = control.neck_pos_y;
+        giraffe.children[0].children[1].children[0].children[0].position.z = control.neck_pos_z;
 
         // the tail bone
-        horse.children[0].children[0].children[0].rotation.z -= 0.1
-        horse.children[0].children[0].children[0].matrixAutoUpdate = true;
-        horse.children[0].children[0].children[0].matrixWorldNeedsUpdate = true;
+        giraffe.children[0].children[0].children[0].rotation.z -= 0.1
 
         helper.update();
         orbit.update();

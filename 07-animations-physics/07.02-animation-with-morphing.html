@@ -76,13 +76,6 @@
                 model.faceVertexUvs[0][i] = [new THREE.Vector2(0,0), new THREE.Vector2(0,0), new THREE.Vector2(0,0)];
             }
 
-            // calculate everyting Three.js needs for rendering
-            model.computeTangents();
-            model.computeFaceNormals();
-            model.computeVertexNormals();
-            model.computeMorphNormals();
-
-
             // repositon the model
             car.position.y = -1;
 
@@ -116,7 +109,7 @@
         });;
         gui.add(control, 'mt_3', 0, 1).step(0.01).listen().onChange(function(a){
             car.morphTargetInfluences[3] = a;
-        });;
+        });
 
         gui.add(control, 'animate');
     }

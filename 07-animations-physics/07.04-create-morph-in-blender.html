@@ -74,23 +74,14 @@
 
 
         var loader = new THREE.JSONLoader();
-        loader.load("../assets/models/morph/simplemorph.js",function(model){
+        loader.load("../assets/models/morph/simplemorph2.js",function(model){
 
             var mat = new THREE.MeshLambertMaterial({color: 0xff3333, morphTargets:true})
             mesh = new THREE.MorphAnimMesh(model, mat);
             mesh.parseAnimations();
 
-
-            // calculate everyting Three.js needs for rendering
-//            model.computeTangents();
-            model.computeFaceNormals();
-            model.computeVertexNormals();
-            model.computeMorphNormals();
-
             mesh.castShadow = true;
-
             scene.add(mesh);
-
 
             mesh.playAnimation('animation', 20);
             mesh.duration = 10;

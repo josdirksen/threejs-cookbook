@@ -29,7 +29,7 @@
 
         // create a scene, that will hold all our elements such as objects, cameras and lights.
         scene = new Physijs.Scene;
-        scene.setGravity(new THREE.Vector3( 0, -30, 0 ));
+        scene.setGravity(new THREE.Vector3(0, -30, 0));
 
         // create a camera, which defines where we're looking at.
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -41,37 +41,39 @@
         renderer.shadowMapEnabled = true;
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(25,23,15);
+        dirLight.position.set(25, 23, 15);
         scene.add(dirLight);
 
 
         var dirLight2 = new THREE.DirectionalLight();
-        dirLight2.position.set(-25,23,15);
+        dirLight2.position.set(-25, 23, 15);
         scene.add(dirLight2);
 
 
         var spotLight = new THREE.SpotLight();
         spotLight.intensity = 0.1;
-        spotLight.position.set(30,60,60);
+        spotLight.position.set(30, 60, 60);
         scene.add(spotLight);
         spotLight.castShadow = true;
-        spotLight.shadowCameraFov=60;
-        spotLight.shadowCameraFar=250;
-        spotLight.shadowCameraFNear=50;
+        spotLight.shadowCameraFov = 60;
+        spotLight.shadowCameraFar = 250;
+        spotLight.shadowCameraFNear = 50;
 
 
-        var groundPlane = new THREE.PlaneGeometry(1000,1000,20,20);
-        var groundMat = new THREE.MeshLambertMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png")});
+        var groundPlane = new THREE.PlaneGeometry(1000, 1000, 20, 20);
+        var groundMat = new THREE.MeshLambertMaterial({
+            color: 0xffffff,
+            map: THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png")
+        });
         groundMat.map.wrapS = groundMat.map.wrapT = THREE.RepeatWrapping;
-        groundMat.map.repeat.set( 10, 10 );
+        groundMat.map.repeat.set(10, 10);
 
         var physMat = Physijs.createMaterial(groundMat);
-        var physMesh = new Physijs.BoxMesh(groundPlane,physMat,0);
-        physMesh.rotation.x = -0.5*Math.PI;
+        var physMesh = new Physijs.BoxMesh(groundPlane, physMat, 0);
+        physMesh.rotation.x = -0.5 * Math.PI;
         physMesh.receiveShadow = true;
 
         scene.add(physMesh);
-
 
 
         // position and point the camera to the center of the scene
@@ -86,14 +88,14 @@
 
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.restitution = 0.8;
             this.friction = 0.4;
 
-            this.addCube = function() {
+            this.addCube = function () {
                 // create a cube and add to scene
-                var cubeGeometry = new THREE.BoxGeometry(4*Math.random()+2, 4*Math.random()+2, 4*Math.random()+2);
-                var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff*Math.random()});
+                var cubeGeometry = new THREE.BoxGeometry(4 * Math.random() + 2, 4 * Math.random() + 2, 4 * Math.random() + 2);
+                var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff * Math.random()});
                 cubeMaterial.transparent = true;
                 var box_material = Physijs.createMaterial(cubeMaterial, control.friction, control.restitution);
 
@@ -105,15 +107,15 @@
 
                 cube.castShadow = true;
 //        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-                cube.name='cube';
+                cube.name = 'cube';
 
-                cube.position.x = Math.random()*10-5;
+                cube.position.x = Math.random() * 10 - 5;
                 cube.position.y = 40;
-                cube.position.z = Math.random()*10-5;
+                cube.position.z = Math.random() * 10 - 5;
 
-                cube.rotation.x = Math.random() *Math.PI *2;
-                cube.rotation.y = Math.random() *Math.PI *2;
-                cube.rotation.z = Math.random() *Math.PI *2;
+                cube.rotation.x = Math.random() * Math.PI * 2;
+                cube.rotation.y = Math.random() * Math.PI * 2;
+                cube.rotation.z = Math.random() * Math.PI * 2;
 
                 scene.add(cube);
             };
@@ -126,8 +128,8 @@
 
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject, 'friction',0,2);
-        gui.add(controlObject, 'restitution',0,2);
+        gui.add(controlObject, 'friction', 0, 2);
+        gui.add(controlObject, 'restitution', 0, 2);
         gui.add(controlObject, 'addCube');
     }
 

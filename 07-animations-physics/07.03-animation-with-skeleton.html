@@ -44,26 +44,25 @@
         camera.lookAt(scene.position);
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
 
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(15,10,-5);
+        dirLight.position.set(15, 10, -5);
         scene.add(dirLight);
 
         var dirLight2 = new THREE.DirectionalLight();
-        dirLight2.position.set(-15,10,-5);
+        dirLight2.position.set(-15, 10, -5);
         scene.add(dirLight2);
 
         var spotLight = new THREE.SpotLight();
-        spotLight.position.set(40,40,40);
+        spotLight.position.set(40, 40, 40);
         scene.add(spotLight);
 
 
-        control = new function() {
+        control = new function () {
             this.neck_rot_x = 0.01;
             this.neck_rot_y = 0.01;
             this.neck_rot_z = 0.01;
@@ -75,9 +74,9 @@
         addControls(control);
 
         var jsonLoader = new THREE.JSONLoader();
-        jsonLoader.load("../assets/models/bones/giraffe.js", function(model, materials) {
+        jsonLoader.load("../assets/models/bones/giraffe.js", function (model, materials) {
 
-            materials.forEach(function(mat) {
+            materials.forEach(function (mat) {
                 mat.skinning = true;
                 mat.side = THREE.DoubleSide;
             });
@@ -85,9 +84,9 @@
             giraffe = new THREE.SkinnedMesh(model, materials[0]);
 
 
-            giraffe.rotation.x =-0.2;
-            giraffe.rotation.y =1.5 ;
-            giraffe.rotation.z =0.2 ;
+            giraffe.rotation.x = -0.2;
+            giraffe.rotation.y = 1.5;
+            giraffe.rotation.z = 0.2;
             giraffe.position.y = -5;
             scene.add(giraffe);
 
@@ -120,7 +119,9 @@
         gui.add(controlObject, 'neck_pos_y', -10, 10).listen();
         gui.add(controlObject, 'neck_pos_z', -10, 10).listen();
 
-        gui.add({helper: false}, 'helper').onChange(function(e) {helper.visible=e});
+        gui.add({helper: false}, 'helper').onChange(function (e) {
+            helper.visible = e
+        });
     }
 
     function render() {

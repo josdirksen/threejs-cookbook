@@ -50,11 +50,11 @@
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(10,10,10);
+        dirLight.position.set(10, 10, 10);
         scene.add(dirLight);
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(-10,10,-10);
+        dirLight.position.set(-10, 10, -10);
         scene.add(dirLight);
 
 
@@ -62,18 +62,18 @@
 
         // Model adapted from: http://www.blendswap.com/blends/view/70892
         var jsonLoader = new THREE.JSONLoader();
-        jsonLoader.load("../assets/models/morph/car.js", function(model, materials) {
+        jsonLoader.load("../assets/models/morph/car.js", function (model, materials) {
 
             // enable morph targets and set flatshading for best demo effet
-            materials.forEach(function(mat) {
+            materials.forEach(function (mat) {
                 mat.morphTargets = true;
                 mat.shading = THREE.FlatShading;
             });
 
             // fix some missing facevertexes from the model
-            car = new THREE.Mesh(model, new THREE.MeshFaceMaterial( materials ));
-            for (var i = 0 ; i < 60 ; i ++) {
-                model.faceVertexUvs[0][i] = [new THREE.Vector2(0,0), new THREE.Vector2(0,0), new THREE.Vector2(0,0)];
+            car = new THREE.Mesh(model, new THREE.MeshFaceMaterial(materials));
+            for (var i = 0; i < 60; i++) {
+                model.faceVertexUvs[0][i] = [new THREE.Vector2(0, 0), new THREE.Vector2(0, 0), new THREE.Vector2(0, 0)];
             }
 
             // repositon the model
@@ -91,7 +91,7 @@
     }
 
     function addControls() {
-        control = new function() {
+        control = new function () {
             this.mt_1 = 0.01;
             this.mt_2 = 0.01;
             this.mt_3 = 0.01;
@@ -101,13 +101,14 @@
         };
 
         var gui = new dat.GUI();
-        gui.add(control, 'mt_1', 0, 1).step(0.01).listen().onChange(function(a){
+        gui.add(control, 'mt_1', 0, 1).step(0.01).listen().onChange(function (a) {
             car.morphTargetInfluences[1] = a;
         });
-        gui.add(control, 'mt_2', 0, 1).step(0.01).listen().onChange(function(a){
+        gui.add(control, 'mt_2', 0, 1).step(0.01).listen().onChange(function (a) {
             car.morphTargetInfluences[2] = a;
-        });;
-        gui.add(control, 'mt_3', 0, 1).step(0.01).listen().onChange(function(a){
+        });
+        ;
+        gui.add(control, 'mt_3', 0, 1).step(0.01).listen().onChange(function (a) {
             car.morphTargetInfluences[3] = a;
         });
 
@@ -124,13 +125,13 @@
         orbit.update();
 
         if (control.animate) {
-            car.morphTargetInfluences[1]+=step1;
-            car.morphTargetInfluences[2]+=step2;
-            car.morphTargetInfluences[3]+=step3;
+            car.morphTargetInfluences[1] += step1;
+            car.morphTargetInfluences[2] += step2;
+            car.morphTargetInfluences[3] += step3;
 
-            if (car.morphTargetInfluences[1] > 1 || car.morphTargetInfluences[1] < 0) step1*=-1;
-            if (car.morphTargetInfluences[2] > 1 || car.morphTargetInfluences[2] < 0) step2*=-1;
-            if (car.morphTargetInfluences[3] > 1 || car.morphTargetInfluences[3] < 0) step3*=-1;
+            if (car.morphTargetInfluences[1] > 1 || car.morphTargetInfluences[1] < 0) step1 *= -1;
+            if (car.morphTargetInfluences[2] > 1 || car.morphTargetInfluences[2] < 0) step2 *= -1;
+            if (car.morphTargetInfluences[3] > 1 || car.morphTargetInfluences[3] < 0) step3 *= -1;
 
             control.mt_1 = car.morphTargetInfluences[1];
             control.mt_2 = car.morphTargetInfluences[2];

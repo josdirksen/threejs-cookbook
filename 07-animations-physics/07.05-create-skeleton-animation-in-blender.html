@@ -22,7 +22,6 @@
     var orbit;
 
 
-
     function init() {
 
         // create a scene, that will hold all our elements such as objects, cameras and lights.
@@ -49,26 +48,24 @@
         document.body.appendChild(renderer.domElement);
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(15,3,-5);
+        dirLight.position.set(15, 3, -5);
         scene.add(dirLight);
 
         var dirLight2 = new THREE.DirectionalLight();
-        dirLight2.position.set(-15,3,-5);
+        dirLight2.position.set(-15, 3, -5);
         scene.add(dirLight2);
 
 
         var loader = new THREE.JSONLoader();
-        loader.load("../assets/models/bones/crow.js",function(model){
-            var mat = new THREE.MeshLambertMaterial({color: 0xf33f33, shading: THREE.FlatShading, skinning:true})
+        loader.load("../assets/models/bones/crow.js", function (model) {
+            var mat = new THREE.MeshLambertMaterial({color: 0xf33f33, shading: THREE.FlatShading, skinning: true})
             mesh = new THREE.SkinnedMesh(model, mat);
 
-            model.animation = "Crow.ArmatureAction";
-            THREE.AnimationHandler.add(model.animations[0]);
-            var animation = new THREE.Animation( mesh, model.animation );
+            var animation = new THREE.Animation(mesh, model.animations[0]);
             animation.play();
 
-            mesh.scale.set(15,15,15);
-            mesh.position.y  =3;
+            mesh.scale.set(15, 15, 15);
+            mesh.position.y = 3;
             scene.add(mesh);
             render();
         });
@@ -84,7 +81,7 @@
     var t = new THREE.Clock();
     function render() {
         renderer.render(scene, camera);
-        THREE.AnimationHandler.update( t.getDelta() );
+        THREE.AnimationHandler.update(t.getDelta());
 
         requestAnimationFrame(render);
         orbit.update();

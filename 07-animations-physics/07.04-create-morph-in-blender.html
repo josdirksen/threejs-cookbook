@@ -22,7 +22,6 @@
     var orbit;
 
 
-
     function init() {
 
         // create a scene, that will hold all our elements such as objects, cameras and lights.
@@ -49,15 +48,15 @@
         document.body.appendChild(renderer.domElement);
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(15,10,-5);
+        dirLight.position.set(15, 10, -5);
         scene.add(dirLight);
 
         var dirLight2 = new THREE.DirectionalLight();
-        dirLight2.position.set(-15,10,-5);
+        dirLight2.position.set(-15, 10, -5);
         scene.add(dirLight2);
 
         var spotLight = new THREE.SpotLight();
-        spotLight.position.set(20,30,40);
+        spotLight.position.set(20, 30, 40);
         scene.add(spotLight);
         spotLight.castShadow = true;
         spotLight.shadowCameraFar = 60;
@@ -65,18 +64,18 @@
         spotLight.shadowCameraFov = 10;
 
 
-        var floorGeom = new THREE.PlaneGeometry(100,100);
-        var floorMesh = new THREE.Mesh(floorGeom, new THREE.MeshLambertMaterial({color:0x333399}));
-        floorMesh.rotation.x = -0.5*Math.PI;
-        floorMesh.position.set(0,-3,0);
+        var floorGeom = new THREE.PlaneGeometry(100, 100);
+        var floorMesh = new THREE.Mesh(floorGeom, new THREE.MeshLambertMaterial({color: 0x333399}));
+        floorMesh.rotation.x = -0.5 * Math.PI;
+        floorMesh.position.set(0, -3, 0);
         floorMesh.receiveShadow = true;
         scene.add(floorMesh);
 
 
         var loader = new THREE.JSONLoader();
-        loader.load("../assets/models/morph/simplemorph2.js",function(model){
+        loader.load("../assets/models/morph/simplemorph.js", function (model) {
 
-            var mat = new THREE.MeshLambertMaterial({color: 0xff3333, morphTargets:true})
+            var mat = new THREE.MeshLambertMaterial({color: 0xff3333, morphTargets: true})
             mesh = new THREE.MorphAnimMesh(model, mat);
             mesh.parseAnimations();
 

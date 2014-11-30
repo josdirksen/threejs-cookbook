@@ -37,6 +37,7 @@
         gl_PointSize = 2.0 * pSize * size * ( scale / length( mvPosition.xyz ) );
         gl_Position = projectionMatrix * mvPosition;
     }
+
 </script>
 
 <script id="particleFragmentShader" type="x-shader/x-fragment">
@@ -56,6 +57,7 @@
         gl_FragColor = gl_FragColor * texture2D( map, vec2( gl_PointCoord.x, 1.0 - gl_PointCoord.y ) );
         gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );
     }
+
 </script>
 
 
@@ -108,28 +110,28 @@
         var pOpacity = [];
 
         // create the geometry and set custom values
-        for (var i = 0 ; i < x ; i++) {
-            for (var j = 0 ; j < y ; j++) {
+        for (var i = 0; i < x; i++) {
+            for (var j = 0; j < y; j++) {
                 var v = new THREE.Vector3();
                 v.x = i / 10;
-                v.y = (Math.sin(i/200 * Math.PI*2) + Math.cos(j/50 * Math.PI) + Math.sin((j+i)/40 * Math.PI))/2;
+                v.y = (Math.sin(i / 200 * Math.PI * 2) + Math.cos(j / 50 * Math.PI) + Math.sin((j + i) / 40 * Math.PI)) / 2;
                 v.z = j / 10;
 
                 // add the vertex
                 geometry.vertices.push(v);
 
                 // add vertex specific color, size and opacity
-                geometry.colors.push(new THREE.Color(v.y,0.5,0.7));
+                geometry.colors.push(new THREE.Color(v.y, 0.5, 0.7));
                 pSize.push(Math.random());
-                pOpacity.push(Math.random()/4+0.5);
+                pOpacity.push(Math.random() / 4 + 0.5);
             }
         }
 
         // define the attributes that get sent to the shader
         // there should be an attribute for each individual vertex
         var attributes = {
-            pSize:    {	type: 'f', value: pSize },
-            pOpacity: {	type: 'f', value: pOpacity }
+            pSize: {type: 'f', value: pSize},
+            pOpacity: {type: 'f', value: pOpacity}
         };
 
         // we'll get the basic shader stuff, so we don't have to define all the uniforms oursevles
@@ -145,17 +147,17 @@
         var psMat2 = new THREE.ShaderMaterial({
             attributes: attributes,
             uniforms: uniforms,
-            transparent : true,
-            blending : THREE.AdditiveBlending,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
             vertexShader: document.
-                getElementById('particleVertexShader').text,
+                    getElementById('particleVertexShader').text,
             fragmentShader: document.
                     getElementById('particleFragmentShader').text
         });
 
         // Create a new particle system based on the provided geometry
         // and provided shader material
-        ps = new THREE.ParticleSystem(geometry, psMat2);
+        ps = new THREE.PointCloud(geometry, psMat2);
         ps.sortParticles = true;
 
         // position it in the middle
@@ -171,8 +173,6 @@
     function render() {
         renderer.render(scene, camera);
         requestAnimationFrame(render);
-
-
 
 
         orbit.update();

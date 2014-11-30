@@ -73,7 +73,7 @@
 
         geometry.vertices = particles;
 
-        var psMat = new THREE.ParticleSystemMaterial();
+        var psMat = new THREE.PointCloudMaterial();
         psMat.vertexColors = true;
         psMat.map = THREE.ImageUtils.loadTexture("../assets/textures/ps_ball.png");
         psMat.blending = THREE.AdditiveBlending;
@@ -81,7 +81,7 @@
         psMat.opacity = 0.6;
 //        psMat.size = 0.7;
 
-        ps = new THREE.ParticleSystem(geometry, psMat);
+        ps = new THREE.PointCloud(geometry, psMat);
         ps.sizeAttenuation = true;
         ps.sortParticles = true;
 

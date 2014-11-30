@@ -42,7 +42,7 @@
 //        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.position.set(1200, 500, 1200);
-        camera.lookAt(new THREE.Vector3(450,-150,350));
+        camera.lookAt(new THREE.Vector3(450, -150, 350));
 
         // create a render, sets the background color and the size
         renderer = new THREE.WebGLRenderer();
@@ -51,34 +51,34 @@
 
         var dirLight = new THREE.DirectionalLight();
         scene.add(dirLight);
-        dirLight.position.set(500,200,300);
+        dirLight.position.set(500, 200, 300);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
 
         };
 
         addControls(control);
 
         // add a large number of cubes
-        for (var x = 0 ; x < 30 ; x++)  {
-            for (var y = 0 ; y < 30 ; y++)  {
+        for (var x = 0; x < 30; x++) {
+            for (var y = 0; y < 30; y++) {
                 addCube(x, y);
             }
         }
 
         // now setup the effectcomposer loop
-        composer = new THREE.EffectComposer( renderer );
+        composer = new THREE.EffectComposer(renderer);
 
-        var renderPass = new THREE.RenderPass( scene, camera );
-        composer.addPass( renderPass  );
+        var renderPass = new THREE.RenderPass(scene, camera);
+        composer.addPass(renderPass);
 
-        var effect = new THREE.ShaderPass( THREE.DotScreenShader );
-        effect.uniforms[ 'scale' ].value = 4;
+        var effect = new THREE.ShaderPass(THREE.DotScreenShader);
+        effect.uniforms['scale'].value = 4;
         effect.renderToScreen = true;
-        composer.addPass( effect );
+        composer.addPass(effect);
 
         // copy shader that doesn't do anything, but copies the
         // current texture to the screen.
@@ -93,16 +93,16 @@
 
     function addCube(x, y) {
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(50, Math.random()*75+25, 50);
+        var cubeGeometry = new THREE.BoxGeometry(50, Math.random() * 75 + 25, 50);
         var cubeMaterial = new THREE.MeshLambertMaterial();
         cubeMaterial.color = new THREE.Color(scale(Math.random()).hex());
         cubeMaterial.transparent = true;
-        cubeMaterial.opacity = Math.random()*0.2+0.8;
+        cubeMaterial.opacity = Math.random() * 0.2 + 0.8;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
-        cube.position.x=60 * x - 450;
-        cube.position.y=cubeGeometry.parameters.height/2;
-        cube.position.z=60 * y - 450;
+        cube.name = 'cube';
+        cube.position.x = 60 * x - 450;
+        cube.position.y = cubeGeometry.parameters.height / 2;
+        cube.position.z = 60 * y - 450;
         scene.add(cube);
 
     }

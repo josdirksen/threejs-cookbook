@@ -60,13 +60,13 @@
     function setupParticleSystem() {
 
         var loader = new THREE.OBJLoader();
-        loader.load("../assets/models/cow/cowTM08New00RTime02.obj", function(cow) {
+        loader.load("../assets/models/cow/cowTM08New00RTime02.obj", function (cow) {
 
             // get the main cow geometry from the loaded object hierarchy
             var geometry = cow.children[1].geometry;
 
             // use a material for some styling
-            var psMat = new THREE.ParticleSystemMaterial(geometry);
+            var psMat = new THREE.PointCloudMaterial(geometry);
             psMat.map = THREE.ImageUtils.loadTexture("../assets/textures/ps_smoke.png");
             psMat.color = new THREE.Color(0x5555ff);
             psMat.transparent = true;
@@ -74,7 +74,7 @@
             psMat.blending = THREE.AdditiveBlending;
 
             // Create a new particle system based on the provided geometry
-            ps = new THREE.ParticleSystem(geometry, psMat);
+            ps = new THREE.PointCloud(geometry, psMat);
             ps.sizeAttenuation = true;
             ps.sortParticles = true;
 
@@ -88,8 +88,6 @@
     function render() {
         renderer.render(scene, camera);
         requestAnimationFrame(render);
-
-
 
 
         orbit.update();

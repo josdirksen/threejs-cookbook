@@ -61,34 +61,34 @@
 
         var geometry = new THREE.Geometry();
 
-            for (var i = 0 ; i < x ; i++) {
-                for (var j = 0 ; j < y ; j++) {
-                    var v = new THREE.Vector3();
-                    v.x = i / 10;
-                    v.y = Math.sin(i/100 * Math.PI*2) + Math.cos(j/100 * Math.PI) * 2;
-                    v.z = j / 10;
+        for (var i = 0; i < x; i++) {
+            for (var j = 0; j < y; j++) {
+                var v = new THREE.Vector3();
+                v.x = i / 10;
+                v.y = Math.sin(i / 100 * Math.PI * 2) + Math.cos(j / 100 * Math.PI) * 2;
+                v.z = j / 10;
 
-                    geometry.vertices.push(v);
-                }
+                geometry.vertices.push(v);
             }
+        }
 
-            // use a material for some styling
-            var psMat = new THREE.ParticleSystemMaterial(geometry);
-            psMat.map = THREE.ImageUtils.loadTexture("../assets/textures/ps_smoke.png");
-            psMat.color = new THREE.Color(0x55ff55);
-            psMat.transparent = true;
-            psMat.size = 0.2;
-            psMat.blending = THREE.AdditiveBlending;
+        // use a material for some styling
+        var psMat = new THREE.PointCloudMaterial();
+        psMat.map = THREE.ImageUtils.loadTexture("../assets/textures/ps_smoke.png");
+        psMat.color = new THREE.Color(0x55ff55);
+        psMat.transparent = true;
+        psMat.size = 0.2;
+        psMat.blending = THREE.AdditiveBlending;
 
-            // Create a new particle system based on the provided geometry
-            ps = new THREE.ParticleSystem(geometry, psMat);
-            ps.sizeAttenuation = true;
-            ps.sortParticles = true;
+        // Create a new particle system based on the provided geometry
+        ps = new THREE.PointCloud(geometry, psMat);
+        ps.sizeAttenuation = true;
+        ps.sortParticles = true;
 
-            ps.position.x -= x / 20;
-            ps.position.z -= x / 20;
-            // add the particle system to the scene
-            scene.add(ps);
+        ps.position.x -= x / 20;
+        ps.position.z -= x / 20;
+        // add the particle system to the scene
+        scene.add(ps);
 
     }
 
@@ -97,8 +97,6 @@
     function render() {
         renderer.render(scene, camera);
         requestAnimationFrame(render);
-
-
 
 
         orbit.update();

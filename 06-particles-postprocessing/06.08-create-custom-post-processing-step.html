@@ -26,6 +26,7 @@
       texCoord = uv;
       gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
     }
+
 </script>
 
 <!--Adopted from: https://github.com/evanw/glfx.js-->
@@ -73,6 +74,7 @@
     choice *= scale / texSize;
     gl_FragColor = texture2D(tDiffuse, choice + center / texSize);
     }
+
 </script>
 
 <script id="basic-v" type="x-shader/x-fragment">
@@ -84,6 +86,7 @@
     gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 
     }
+
 </script>
 
 <script id="basic-f" type="x-shader/x-fragment">
@@ -99,6 +102,7 @@
     gl_FragColor = texel;
 
     }
+
 </script>
 
 <script>
@@ -111,7 +115,7 @@
     var control;
     var group;
 
-    var scale = chroma.scale(['red', 'yellow']);
+    var scale = chroma.scale(['green', 'red', 'blue']);
 
     var composer;
 
@@ -124,7 +128,7 @@
 //        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 4000);
         camera.position.set(500, 400, 500);
-        camera.lookAt(new THREE.Vector3(00,0,00));
+        camera.lookAt(new THREE.Vector3(00, 0, 00));
 
         // create a render, sets the background color and the size
         renderer = new THREE.WebGLRenderer();
@@ -133,13 +137,13 @@
 
         var dirLight = new THREE.DirectionalLight();
         scene.add(dirLight);
-        dirLight.position.set(500,200,300);
+        dirLight.position.set(500, 200, 300);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
-            this.rotationSpeed=0.0005;
+        control = new function () {
+            this.rotationSpeed = 0.0005;
         };
 
         addControls(control);
@@ -147,29 +151,29 @@
         group = new THREE.Object3D();
 
         // add a large number of cubes
-        for (var x = -15 ; x < 15 ; x++)  {
-            for (var y = -15 ; y < 15 ; y++)  {
+        for (var x = -15; x < 15; x++) {
+            for (var y = -15; y < 15; y++) {
                 addCube(x, y, group);
             }
         }
 
-        group.position.x-= (30*20)/2;
-        group.position.z-= 0
+        group.position.x -= (30 * 20) / 2;
+        group.position.z -= 0
         scene.add(group);
 
 
         // now setup the effectcomposer loop
-        composer = new THREE.EffectComposer( renderer );
+        composer = new THREE.EffectComposer(renderer);
 
-        var renderPass = new THREE.RenderPass( scene, camera );
-        composer.addPass( renderPass  );
+        var renderPass = new THREE.RenderPass(scene, camera);
+        composer.addPass(renderPass);
 
         var customShader = {
             uniforms: {
-                "tDiffuse": { type: "t", value: null},
-                "scale":    { type: "f", value: 1.0 },
-                "texSize":  { type: "v2", value: new THREE.Vector2( 50, 50 ) },
-                "center":   { type: "v2", value: new THREE.Vector2( 0.5, 0.5 ) },
+                "tDiffuse": {type: "t", value: null},
+                "scale": {type: "f", value: 1.0},
+                "texSize": {type: "v2", value: new THREE.Vector2(50, 50)},
+                "center": {type: "v2", value: new THREE.Vector2(0.5, 0.5)},
             },
             vertexShader: document.
                     getElementById('hexagonVertexShader').text,
@@ -177,9 +181,9 @@
                     getElementById('hexagonFragmentShader').text
         };
 
-        var effect = new THREE.ShaderPass( customShader );
+        var effect = new THREE.ShaderPass(customShader);
         effect.renderToScreen = true;
-        composer.addPass( effect );
+        composer.addPass(effect);
 
         // call the render function
         render();
@@ -188,16 +192,16 @@
     function addCube(x, y, group) {
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(50, Math.random()*75+25, 50);
+        var cubeGeometry = new THREE.BoxGeometry(50, Math.random() * 75 + 25, 50);
         var cubeMaterial = new THREE.MeshLambertMaterial();
         cubeMaterial.color = new THREE.Color(scale(Math.random()).hex());
         cubeMaterial.transparent = true;
-        cubeMaterial.opacity = Math.random()*0.2+0.8;
+        cubeMaterial.opacity = Math.random() * 0.2 + 0.8;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
-        cube.position.x=60 * x;
-        cube.position.y=cubeGeometry.parameters.height/2;
-        cube.position.z=60 * y;
+        cube.name = 'cube';
+        cube.position.x = 60 * x;
+        cube.position.y = cubeGeometry.parameters.height / 2;
+        cube.position.z = 60 * y;
 
         group.add(cube);
 
@@ -214,10 +218,10 @@
 
 //        camera.position.x = x * Math.cos(control.rotationSpeed) + z * Math.sin(control.rotationSpeed);
 //        camera.position.z = z * Math.cos(control.rotationSpeed) - x * Math.sin(control.rotationSpeed);
-<!---->
+        <!---->
 //        camera.lookAt(scene.position);
 
-        group.rotation.y+=control.rotationSpeed;
+        group.rotation.y += control.rotationSpeed;
 
         composer.render();
 

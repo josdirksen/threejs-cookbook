@@ -61,25 +61,25 @@
         // initially render the particles off screen
         var geometry = new THREE.Geometry();
 
-        for (var i = 0 ; i < x ; i++) {
-            for (var j = 0 ; j < y ; j++) {
-                var v = new THREE.Vector3(i,0,j);
-                var rnd = Math.random()/2 + 0.5;
-                geometry.colors.push(new THREE.Color(rnd, rnd/4, 0));
+        for (var i = 0; i < x; i++) {
+            for (var j = 0; j < y; j++) {
+                var v = new THREE.Vector3(i, 0, j);
+                var rnd = Math.random() / 2 + 0.5;
+                geometry.colors.push(new THREE.Color(rnd, rnd / 4, 0));
                 geometry.vertices.push(v);
             }
         }
 
-        var psMat = new THREE.ParticleSystemMaterial(geometry);
+        var psMat = new THREE.PointCloudMaterial();
         psMat.vertexColors = true;
         psMat.map = THREE.ImageUtils.loadTexture("../assets/textures/ps_smoke.png");
         psMat.transparent = true;
 
-        ps = new THREE.ParticleSystem(geometry, psMat);
+        ps = new THREE.PointCloud(geometry, psMat);
         ps.sizeAttenuation = true;
 
-        ps.position.x-=x/2;
-        ps.position.z-=y/2;
+        ps.position.x -= x / 2;
+        ps.position.z -= y / 2;
 
         scene.add(ps);
     }
@@ -91,17 +91,16 @@
         requestAnimationFrame(render);
 
 
-        if (step%8===0) {
-            for (var i = 0 ; i < ps.geometry.colors.length ; i++) {
-                var rnd = Math.random()/2 + 0.5;
-                ps.geometry.colors[i] = new THREE.Color(rnd, rnd/4, 0);
+        if (step % 8 === 0) {
+            for (var i = 0; i < ps.geometry.colors.length; i++) {
+                var rnd = Math.random() / 2 + 0.5;
+                ps.geometry.colors[i] = new THREE.Color(rnd, rnd / 4, 0);
             }
             ps.geometry.colorsNeedUpdate = true;
         }
 
 
         step++;
-
 
 
         orbit.update();

@@ -51,11 +51,11 @@
 
         orbit = new THREE.OrbitControls(camera);
 
-        control = new function() {
-            this.explode = function() {
+        control = new function () {
+            this.explode = function () {
                 doExplode = true;
             }
-            this.implode = function() {
+            this.implode = function () {
                 doExplode = false;
             }
             this.scale = 0.02;
@@ -65,7 +65,7 @@
         document.body.appendChild(renderer.domElement);
 
         var loader = new THREE.OBJLoader();
-        loader.load("../assets/models/cow/cowTM08New00RTime02.obj", function(cow) {
+        loader.load("../assets/models/cow/cowTM08New00RTime02.obj", function (cow) {
             // get the main cow geometry from the loaded object hierarchy
             model = cow.children[1].geometry;
             model.computeFaceNormals();
@@ -73,7 +73,7 @@
 
 //            model = new THREE.CubeGeometry(4,6,4,20,20,20);
 
-            model.vertices.forEach(function(v) {
+            model.vertices.forEach(function (v) {
                 v.velocity = Math.random();
             });
             createParticleSystemFromGeometry(model);
@@ -84,21 +84,18 @@
         });
 
 
-
-
     }
 
     function explode(outwards) {
 
 
-
         var dir = outwards === true ? 1 : -1;
 
         var count = 0;
-        model.vertices.forEach(function(v){
-            v.x+=(avgVertexNormals[count].x * v.velocity * control.scale)*dir;
-            v.y+=(avgVertexNormals[count].y * v.velocity * control.scale)*dir;
-            v.z+=(avgVertexNormals[count].z * v.velocity * control.scale)*dir;
+        model.vertices.forEach(function (v) {
+            v.x += (avgVertexNormals[count].x * v.velocity * control.scale) * dir;
+            v.y += (avgVertexNormals[count].y * v.velocity * control.scale) * dir;
+            v.z += (avgVertexNormals[count].z * v.velocity * control.scale) * dir;
 
 
             count++;
@@ -108,25 +105,22 @@
     }
 
     function createParticleSystemFromGeometry(geom) {
-        var psMat = new THREE.ParticleSystemMaterial();
+        var psMat = new THREE.PointCloudMaterial();
         psMat.map = THREE.ImageUtils.loadTexture("../assets/textures/ps_ball.png");
         psMat.blending = THREE.AdditiveBlending;
         psMat.transparent = true;
-        psMat.color = new THREE.Color(0,1,1);
+        psMat.color = new THREE.Color(0, 1, 1);
         psMat.opacity = 0.6;
-        var ps = new THREE.ParticleSystem(geom, psMat);
+        var ps = new THREE.PointCloud(geom, psMat);
         ps.sortParticles = true;
 
         scene.add(ps);
 
 
-
-
-        for (var i = 0 ; i < model.vertices.length ; i++) {
-            avgVertexNormals.push(new THREE.Vector3(0,0,0));
+        for (var i = 0; i < model.vertices.length; i++) {
+            avgVertexNormals.push(new THREE.Vector3(0, 0, 0));
             avgVertexCount.push(0);
         }
-
 
 
         // first add all the normals
@@ -136,9 +130,9 @@
             var vC = f.vertexNormals[2];
 
             // update the count
-            avgVertexCount[f.a]+=1;
-            avgVertexCount[f.b]+=1;
-            avgVertexCount[f.c]+=1;
+            avgVertexCount[f.a] += 1;
+            avgVertexCount[f.b] += 1;
+            avgVertexCount[f.c] += 1;
 
             // add the vector
             avgVertexNormals[f.a].add(vA);
@@ -147,10 +141,8 @@
         });
 
 
-
-
         // then calculate the average
-        for (var i = 0 ; i < avgVertexNormals.length ; i++) {
+        for (var i = 0; i < avgVertexNormals.length; i++) {
             avgVertexNormals[i].divideScalar(avgVertexCount[i]);
         }
 
@@ -161,7 +153,7 @@
         var gui = new dat.GUI();
         gui.add(controlObject, 'explode');
         gui.add(controlObject, 'implode');
-        gui.add(controlObject, 'scale', 0,1).step(0.01);
+        gui.add(controlObject, 'scale', 0, 1).step(0.01);
     }
 
     function render() {
@@ -169,7 +161,7 @@
         orbit.update();
         if (doExplode) {
             explode(true);
-        } else  {
+        } else {
             explode(false);
         }
 

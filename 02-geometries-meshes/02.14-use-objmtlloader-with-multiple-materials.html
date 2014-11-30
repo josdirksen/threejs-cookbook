@@ -50,7 +50,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -60,13 +60,11 @@
 
         // based on model from:
         // http://www.blendswap.com/blends/view/69499
-        loader.load("../assets/models/lego.obj","../assets/models/lego.mtl", function(obj) {
+        loader.load("../assets/models/lego.obj", "../assets/models/lego.mtl", function (obj) {
             obj.translateY(-3);
-            obj.name='lego';
+            obj.name = 'lego';
             scene.add(obj);
-            console.log(obj);
         });
-
 
 
         // call the render function
@@ -82,8 +80,8 @@
     function render() {
         renderer.render(scene, camera);
         if (scene.getObjectByName('lego')) {
-            scene.getObjectByName('lego').rotation.y+=control.rotationSpeed;
-            scene.getObjectByName('lego').scale.set(control.scale,control.scale,control.scale);
+            scene.getObjectByName('lego').rotation.y += control.rotationSpeed;
+            scene.getObjectByName('lego').scale.set(control.scale, control.scale, control.scale);
         }
 
         requestAnimationFrame(render);

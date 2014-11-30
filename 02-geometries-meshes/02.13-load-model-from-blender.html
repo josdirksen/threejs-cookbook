@@ -73,7 +73,7 @@
         scene.add(ambiLight);
 
         // setup the control object for the control gui
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
         };
 
@@ -95,10 +95,10 @@
     function loadModel() {
         var loader = new THREE.JSONLoader();
         loader.load("../assets/models/monkey-mat.js",
-                function(model, material) {
+                function (model, material) {
 
                     var mesh = new THREE.Mesh(model, material[0]);
-                    mesh.scale = new THREE.Vector3(3,3,3);
+                    mesh.scale = new THREE.Vector3(3, 3, 3);
                     scene.add(mesh);
 
                 }, "../assets/textures/");
@@ -118,7 +118,7 @@
         stats.domElement.style.left = '0px';
         stats.domElement.style.top = '0px';
 
-        document.body.appendChild( stats.domElement );
+        document.body.appendChild(stats.domElement);
     }
 
 

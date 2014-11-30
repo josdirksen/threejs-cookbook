@@ -34,11 +34,11 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
+        var cubeGeometry = new THREE.BoxGeometry(10 * Math.random(), 10 * Math.random(), 10 * Math.random());
         var cubeMaterial = new THREE.MeshNormalMaterial();
         cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -50,7 +50,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.01;
             this.scale = 1;
             this.x = 0.1;
@@ -67,16 +67,17 @@
             this.theta = 0.1;
 
 
-            this.doTranslation = function() {
+            this.doTranslation = function () {
                 // you have two options, either use the
                 // helper function provided by three.js
                 // new THREE.Matrix4().makeTranslation(3,3,3);
                 // or do it yourself
-                var translationMatrix = new THREE.Matrix4(
-                       1, 0, 0, control.x,
-                       0, 1, 0, control.y,
-                       0, 0, 1, control.z,
-                       0, 0, 0, 1
+                var translationMatrix = new THREE.Matrix4();
+                translationMatrix.set(
+                        1, 0, 0, control.x,
+                        0, 1, 0, control.y,
+                        0, 0, 1, control.z,
+                        0, 0, 0, 1
                 );
                 cube.applyMatrix(translationMatrix);
 
@@ -85,24 +86,27 @@
                 // cube.geometry.verticesNeedUpdate = true;
             }
 
-            this.doScale = function() {
-                var scaleMatrix = new THREE.Matrix4(
-                        control.x, 0,         0,         0,
-                        0,         control.y, 0,         0,
-                        0,         0,         control.z, 0,
-                        0,         0,         0,         1
+            this.doScale = function () {
+                var scaleMatrix = new THREE.Matrix4();
+                scaleMatrix.set(
+                        control.x, 0, 0, 0,
+                        0, control.y, 0, 0,
+                        0, 0, control.z, 0,
+                        0, 0, 0, 1
                 );
 
                 cube.geometry.applyMatrix(scaleMatrix);
                 cube.geometry.verticesNeedUpdate = true;
             }
 
-            this.doShearing = function() {
-                var scaleMatrix = new THREE.Matrix4(
-                        1,      this.a, this.b, 0,
-                        this.c, 1,      this.d, 0,
-                        this.e, this.f, 1,      0,
-                        0,      0,      0,      1
+            this.doShearing = function () {
+
+                var scaleMatrix = new THREE.Matrix4();
+                scaleMatrix.set(
+                        1, this.a, this.b, 0,
+                        this.c, 1, this.d, 0,
+                        this.e, this.f, 1, 0,
+                        0, 0, 0, 1
                 );
 
 
@@ -110,18 +114,20 @@
                 cube.geometry.verticesNeedUpdate = true;
             }
 
-             this.doRotationY = function() {
-                 var c = Math.cos( this.theta ), s = Math.sin( this.theta );
-                 var rotationMatrix = new THREE.Matrix4(
-                         c, 0, s, 0,
-                         0, 1, 0, 0,
-                         -s, 0, c, 0,
-                         0, 0, 0, 1
-                 );
+            this.doRotationY = function () {
+                var c = Math.cos(this.theta), s = Math.sin(this.theta);
 
-                 cube.geometry.applyMatrix(rotationMatrix);
-                 cube.geometry.verticesNeedUpdate = true;
-             }
+                var rotationMatrix = new THREE.Matrix4();
+                rotationMatrix.set(
+                        c, 0, s, 0,
+                        0, 1, 0, 0,
+                        -s, 0, c, 0,
+                        0, 0, 0, 1
+                );
+
+                cube.geometry.applyMatrix(rotationMatrix);
+                cube.geometry.verticesNeedUpdate = true;
+            }
 
 
         };
@@ -157,8 +163,8 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         requestAnimationFrame(render);
     }

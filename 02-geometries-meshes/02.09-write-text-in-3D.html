@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>01.07 - Control variables</title>
+    <title>02.09 - Write text in 3D</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/dat.gui.min.js"></script>
     <script src="../libs/TrackballControls.js"></script>
@@ -46,13 +46,13 @@
         renderer.setClearColor(0xffffff, 1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        var dirLight = new THREE.DirectionalLight( 0xffffff, 0.125 );
-        dirLight.position.set( 0, 0, 1 ).normalize();
-        scene.add( dirLight );
+        var dirLight = new THREE.DirectionalLight(0xffffff, 0.125);
+        dirLight.position.set(0, 0, 1).normalize();
+        scene.add(dirLight);
 
-        var pointLight = new THREE.PointLight( 0xffffff, 1.5 );
-        pointLight.position.set( 0, 100, 90 );
-        scene.add( pointLight );
+        var pointLight = new THREE.PointLight(0xffffff, 1.5);
+        pointLight.position.set(0, 100, 90);
+        scene.add(pointLight);
 
         var ambientLight = new THREE.AmbientLight(0x111111);
         scene.add(ambientLight);
@@ -65,11 +65,10 @@
         camera.lookAt(scene.position);
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.bevelEnabled = false;
             this.bevelThickness = 8;
             this.bevelSize = 4;
@@ -133,14 +132,14 @@
 
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject,"height",5,50).onChange(updateText);
-        gui.add(controlObject,"size",20,100).onChange(updateText);
-        gui.add(controlObject,"curveSegments",2,12).step(1).onChange(updateText);
-        gui.add(controlObject,"bevelEnabled").onChange(updateText);
-        gui.add(controlObject,"bevelThickness",2,16).step(1).onChange(updateText);
-        gui.add(controlObject,"bevelSize",2,16).step(1).onChange(updateText);
-        gui.add(controlObject,"weight",["normal","bold"]).onChange(updateText);
-        gui.add(controlObject,"font",["helvetiker","optimer","gentilis","droid sans","droid serif"]).onChange(updateText);
+        gui.add(controlObject, "height", 5, 50).onChange(updateText);
+        gui.add(controlObject, "size", 20, 100).onChange(updateText);
+        gui.add(controlObject, "curveSegments", 2, 12).step(1).onChange(updateText);
+        gui.add(controlObject, "bevelEnabled").onChange(updateText);
+        gui.add(controlObject, "bevelThickness", 2, 16).step(1).onChange(updateText);
+        gui.add(controlObject, "bevelSize", 2, 16).step(1).onChange(updateText);
+        gui.add(controlObject, "weight", ["normal", "bold"]).onChange(updateText);
+        gui.add(controlObject, "font", ["helvetiker", "optimer", "gentilis", "droid sans", "droid serif"]).onChange(updateText);
     }
 
     function addText(text, params) {
@@ -149,18 +148,17 @@
         textGeo.computeBoundingBox();
         textGeo.computeVertexNormals();
 
-        var material = new THREE.MeshFaceMaterial( [
-            new THREE.MeshPhongMaterial( { color: 0xff22cc, shading: THREE.FlatShading } ), // front
-            new THREE.MeshPhongMaterial( { color: 0xff22cc, shading: THREE.SmoothShading } ) // side
-        ] );
+        var material = new THREE.MeshFaceMaterial([
+            new THREE.MeshPhongMaterial({color: 0xff22cc, shading: THREE.FlatShading}), // front
+            new THREE.MeshPhongMaterial({color: 0xff22cc, shading: THREE.SmoothShading}) // side
+        ]);
 
-        var textMesh = new THREE.Mesh(textGeo,material);
-        textMesh.position.x=-textGeo.boundingBox.max.x/2;
-        textMesh.position.y=-200;
+        var textMesh = new THREE.Mesh(textGeo, material);
+        textMesh.position.x = -textGeo.boundingBox.max.x / 2;
+        textMesh.position.y = -200;
         textMesh.name = 'text';
         scene.add(textMesh);
     }
-
 
 
     function render() {

@@ -82,7 +82,7 @@
             // draw on canvas
             ctx.drawImage(img, 0, 0);
             var pixel = ctx.getImageData(0, 0, width, depth);
-            console.log(pixel);
+
             var geom = new THREE.Geometry;
             var output = [];
             for (var x = 0; x < depth; x++) {
@@ -127,7 +127,11 @@
             var zMax = geom.boundingBox.max.z;
             var xMax = geom.boundingBox.max.x;
 
-            var mesh = new THREE.Mesh(geom, new THREE.MeshLambertMaterial({vertexColors: THREE.FaceColors, color: 0x666666, shading: THREE.NoShading}));
+            var mesh = new THREE.Mesh(geom, new THREE.MeshLambertMaterial({
+                vertexColors: THREE.FaceColors,
+                color: 0x666666,
+                shading: THREE.NoShading
+            }));
             mesh.translateX(-xMax / 2);
             mesh.translateZ(-zMax / 2);
             scene.add(mesh);
@@ -142,7 +146,6 @@
         var v2 = geometry.vertices[face.b].y;
         var v3 = geometry.vertices[face.c].y;
 
-//        console.log(Math.max(v1, v2, v3));
         return Math.max(v1, v2, v3);
     }
 

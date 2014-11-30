@@ -14,27 +14,27 @@
 <script>
 
 
-//    When vertices have changed
-//    geometry.verticesNeedUpdate = true;
-//
-//    When faces or line definitions have changed
-//    geometry.elementsNeedUpdate = true;
-//
-//    When morph targets for morph based animations have changed
-//    geometry.morphTargetsNeedUpdate = true;
-//
-//    When UV mapping for mapping textures have changed
-//    geometry.uvsNeedUpdate = true;
-//
-//    When faceNormals or vertexNormals have changed
-//    geometry.normalsNeedUpdate = true;
-//
-//    When face or vertex colors have changed
-//    geometry.colorsNeedUpdate = true;
-//
-//    When vertex tangents have changed
-//    geometry.tangentsNeedUpdate = true;
-// linedistances
+    //    When vertices have changed
+    //    geometry.verticesNeedUpdate = true;
+    //
+    //    When faces or line definitions have changed
+    //    geometry.elementsNeedUpdate = true;
+    //
+    //    When morph targets for morph based animations have changed
+    //    geometry.morphTargetsNeedUpdate = true;
+    //
+    //    When UV mapping for mapping textures have changed
+    //    geometry.uvsNeedUpdate = true;
+    //
+    //    When faceNormals or vertexNormals have changed
+    //    geometry.normalsNeedUpdate = true;
+    //
+    //    When face or vertex colors have changed
+    //    geometry.colorsNeedUpdate = true;
+    //
+    //    When vertex tangents have changed
+    //    geometry.tangentsNeedUpdate = true;
+    // linedistances
 
 
     // global variables
@@ -58,7 +58,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(30,10,20);
+        dirLight.position.set(30, 10, 20);
         scene.add(dirLight);
 
         // create a cube and add to scene
@@ -67,10 +67,12 @@
         cubeMaterial.transparent = true;
         cubeMaterial.vertexColors = THREE.FaceColors;
 
-        cubeGeometry.faces.forEach(function(e) {e.color = new THREE.Color(0xff0000)});
+        cubeGeometry.faces.forEach(function (e) {
+            e.color = new THREE.Color(0xff0000)
+        });
 
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -82,30 +84,30 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
 
-            this.changeColors = function() {
+            this.changeColors = function () {
                 var mesh = scene.getObjectByName('cube');
-                mesh.geometry.faces.forEach(function(face) {
-                     face.color = new THREE.Color(Math.random() * 0xffffff);
+                mesh.geometry.faces.forEach(function (face) {
+                    face.color = new THREE.Color(Math.random() * 0xffffff);
                 });
             };
 
-            this.setUpdateColorFlag = function() {
+            this.setUpdateColorFlag = function () {
                 var mesh = scene.getObjectByName('cube');
                 mesh.geometry.colorsNeedUpdate = true;
             }
 
-            this.changeVertices = function() {
+            this.changeVertices = function () {
                 var mesh = scene.getObjectByName('cube');
-                mesh.geometry.vertices.forEach(function(vertices) {
-                    vertices.x+=Math.random()*2-1;
-                    vertices.y+=Math.random()*2-1;
-                    vertices.z+=Math.random()*2-1;
+                mesh.geometry.vertices.forEach(function (vertices) {
+                    vertices.x += Math.random() * 2 - 1;
+                    vertices.y += Math.random() * 2 - 1;
+                    vertices.z += Math.random() * 2 - 1;
                 });
             }
 
-            this.setUpdateVerticesFlag = function() {
+            this.setUpdateVerticesFlag = function () {
                 var mesh = scene.getObjectByName('cube');
                 mesh.geometry.verticesNeedUpdate = true;
             }

@@ -37,39 +37,38 @@
 
         // create a cube and add to scene
         var cubeGeometry = new THREE.BoxGeometry(1, 1, 7);
-        var cubeMaterial = new THREE.MeshLambertMaterial({color:'blue'});
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 'blue'});
         cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
-        var sphereGeometry = new THREE.SphereGeometry(1,10,10);
-        var sphereMaterial = new THREE.MeshLambertMaterial({color:'green'});
-        var sphereMesh = new THREE.Mesh(sphereGeometry,sphereMaterial);
-        sphereMesh.position.set(4,6,-4);
+        var sphereGeometry = new THREE.SphereGeometry(1, 10, 10);
+        var sphereMaterial = new THREE.MeshLambertMaterial({color: 'green'});
+        var sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        sphereMesh.position.set(4, 6, -4);
         scene.add(sphereMesh);
 
         var tetraGeometry = new THREE.TetrahedronGeometry(2);
-        var tetraMaterial = new THREE.MeshLambertMaterial({color:'yellow'});
+        var tetraMaterial = new THREE.MeshLambertMaterial({color: 'yellow'});
         var tetraMesh = new THREE.Mesh(tetraGeometry, tetraMaterial);
-        tetraMesh.position.set(-6,0,-4);
+        tetraMesh.position.set(-6, 0, -4);
         scene.add(tetraMesh);
 
 
         var light = new THREE.SpotLight();
-        light.position.set(30,50,30);
+        light.position.set(30, 50, 30);
         scene.add(light);
 
         var light = new THREE.SpotLight();
-        light.position.set(-30,50,30);
+        light.position.set(-30, 50, 30);
         scene.add(light);
 
 
-
-        var boxGeometry = new THREE.BoxGeometry(1,1,1);
-        var boxMaterial = new THREE.MeshLambertMaterial({color:'red'});
-        var boxMesh = new THREE.Mesh(boxGeometry,boxMaterial);
-        boxMesh.position.set(2,4,8);
+        var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+        var boxMaterial = new THREE.MeshLambertMaterial({color: 'red'});
+        var boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        boxMesh.position.set(2, 4, 8);
         scene.add(boxMesh);
 
         // position and point the camera to the center of the scene
@@ -81,15 +80,15 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
-            this.lookAtCube = function() {
+        control = new function () {
+            this.lookAtCube = function () {
                 cube.lookAt(boxMesh.position);
             };
-            this.lookAtSphere = function() {
+            this.lookAtSphere = function () {
                 cube.lookAt(sphereMesh.position);
 
             };
-            this.lookAtTetra = function() {
+            this.lookAtTetra = function () {
                 cube.lookAt(tetraMesh.position);
             };
 

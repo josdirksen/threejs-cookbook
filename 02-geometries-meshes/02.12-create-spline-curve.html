@@ -44,32 +44,49 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
+
+        // setup the control object for the control gui
+        control = new function () {
+            this.numOfPoints = 100;
+        };
+
+        // add extras
+        addControlGui(control);
+
         // call the render function
         render();
     }
 
-    function drawSpline() {
+    function drawSpline(numPoints) {
         // smooth my curve over this many points
-        var numPoints = 15;
         var start = new THREE.Vector3(-20, 0, 0);
         var middle = new THREE.Vector3(0, 30, 0);
         var end = new THREE.Vector3(20, 0, 0);
 
         var curveQuad = new THREE.QuadraticBezierCurve3(start, middle, end);
 
-        var tube = new THREE.TubeGeometry(curveQuad,numPoints,2,20,false);
-        var mesh = new THREE.Mesh(tube,new THREE.MeshNormalMaterial({opacity:0.6 , transparent: true}));
+        var tube = new THREE.TubeGeometry(curveQuad, numPoints, 2, 20, false);
+        var mesh = new THREE.Mesh(tube, new THREE.MeshNormalMaterial({opacity: 0.6, transparent: true}));
         mesh.name = 'tube';
 
         scene.add(mesh);
 
     }
 
+    function addControlGui(controlObject) {
+        var gui = new dat.GUI();
+        gui.add(controlObject, 'numOfPoints', 5, 100).onChange(function () {
+            var tube = scene.getObjectByName('tube');
+            if (tube) scene.remove(tube);
+            drawSpline(Math.round(control.numOfPoints));
+        });
+    }
+
 
     function render() {
         renderer.render(scene, camera);
 
-        scene.getObjectByName('tube').rotation.y+=0.01;
+        scene.getObjectByName('tube').rotation.y += 0.01;
 
         requestAnimationFrame(render);
     }

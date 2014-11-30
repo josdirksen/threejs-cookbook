@@ -36,31 +36,30 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-
         var dirLight = new THREE.DirectionalLight();
-        dirLight.position.set(30,10,10);
+        dirLight.position.set(30, 10, 10);
         scene.add(dirLight);
 
         var dirLight2 = new THREE.DirectionalLight();
-        dirLight2.position.set(30,10,-10);
+        dirLight2.position.set(30, 10, -10);
         scene.add(dirLight2);
 
-        var plane = new THREE.PlaneGeometry(100,100,100,100);
-        planeMaterial = new THREE.MeshLambertMaterial({color:0xffffff});
+        var plane = new THREE.PlaneGeometry(100, 100, 100, 100);
+        planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
         planeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/debug.png")
-        var planeMesh = new THREE.Mesh(plane,planeMaterial);
+        var planeMesh = new THREE.Mesh(plane, planeMaterial);
 
-        planeMesh.rotation.x=-0.5*Math.PI;
-        planeMesh.position.y=-2;
+        planeMesh.rotation.x = -0.5 * Math.PI;
+        planeMesh.position.y = -2;
         scene.add(planeMesh);
 
         // create a cube and add to scene
         var cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
-        var cubeMaterial = new THREE.MeshLambertMaterial({color:'red'});
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 'red'});
         cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.position.z=12;
-        cube.name='cube';
+        cube.position.z = 12;
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -72,8 +71,8 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
-            this.takeStep = function() {
+        control = new function () {
+            this.takeStep = function () {
                 takeStepRight(cube, 0, 0.5 * Math.PI, 1000);
             };
         };
@@ -87,8 +86,8 @@
         var cubeGeometry = cube.geometry;
         var widht = 4;
         if (!isTweening) {
-            var tween = new TWEEN.Tween({ x: start, cube: cube, previous: 0})
-                    .to({ x: end }, time )
+            var tween = new TWEEN.Tween({x: start, cube: cube, previous: 0})
+                    .to({x: end}, time)
                     .easing(TWEEN.Easing.Linear.None)
                     .onStart(function () {
                         cube.position.y += -widht / 2;

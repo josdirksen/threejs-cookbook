@@ -46,23 +46,23 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.merged = false;
             this.rotationSpeed = 0.005;
             this.numberToAdd = 2000;
-            this.clear = function() {
+            this.clear = function () {
                 if (scene.getObjectByName('mesh')) {
                     scene.remove(scene.getObjectByName('mesh'));
                 }
-                objects.forEach(function(e) {
-                    scene.remove(e);
-                objects = [];
-                control.totalCubes = 0;
-                }
+                objects.forEach(function (e) {
+                            scene.remove(e);
+                            objects = [];
+                            control.totalCubes = 0;
+                        }
                 );
             };
 
-            this.addCubes = function() {
+            this.addCubes = function () {
                 control.clear();
 
                 if (control.merged) {
@@ -71,25 +71,28 @@
                         scene.remove(scene.getObjectByName('merged'));
                     }
 
-                    for (var i = 0 ; i < control.numberToAdd ; i++) {
+                    for (var i = 0; i < control.numberToAdd; i++) {
                         mergeCube(mergedGeometry);
                     }
 
-                    var mesh = new THREE.Mesh(mergedGeometry, new THREE.MeshNormalMaterial({opacity:0.5, transparent:true}));
+                    var mesh = new THREE.Mesh(mergedGeometry, new THREE.MeshNormalMaterial({
+                        opacity: 0.5,
+                        transparent: true
+                    }));
                     mesh.name = 'merged';
                     scene.add(mesh);
                 } else {
-                    for (var i = 0 ; i < control.numberToAdd ; i++) {
+                    for (var i = 0; i < control.numberToAdd; i++) {
                         addCube();
                     }
                 }
 
 
-                control.totalCubes+=control.numberToAdd;
+                control.totalCubes += control.numberToAdd;
             }
-            this.merge = function() {
+            this.merge = function () {
                 var geom = new THREE.Geometry();
-                objects.forEach(function(e) {
+                objects.forEach(function (e) {
                     geom.merge();
                 });
             };
@@ -97,28 +100,29 @@
         addControls(control);
 
 
-       stats = createStats();
-        document.body.appendChild( stats.domElement );;
+        stats = createStats();
+        document.body.appendChild(stats.domElement);
+        ;
 
         // call the render function
         render();
     }
 
     function mergeCube(mergeInto) {
-        var cubeGeometry = new THREE.BoxGeometry(4*Math.random(), 4*Math.random(), 4*Math.random());
-        var translation = new THREE.Matrix4().makeTranslation(100*Math.random()-50, 0, 100*Math.random()-50);
+        var cubeGeometry = new THREE.BoxGeometry(4 * Math.random(), 4 * Math.random(), 4 * Math.random());
+        var translation = new THREE.Matrix4().makeTranslation(100 * Math.random() - 50, 0, 100 * Math.random() - 50);
         cubeGeometry.applyMatrix(translation);
 
         mergeInto.merge(cubeGeometry);
     }
 
     function addCube() {
-        var cubeGeometry = new THREE.BoxGeometry(4*Math.random(), 4*Math.random(), 4*Math.random());
-        var cubeMaterial = new THREE.MeshNormalMaterial({opacity:0.5, transparent:true});
+        var cubeGeometry = new THREE.BoxGeometry(4 * Math.random(), 4 * Math.random(), 4 * Math.random());
+        var cubeMaterial = new THREE.MeshNormalMaterial({opacity: 0.5, transparent: true});
         cubeMaterial.transparent = true;
 
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.position.set(100*Math.random()-50, 0, 100*Math.random()-50);
+        cube.position.set(100 * Math.random() - 50, 0, 100 * Math.random() - 50);
         scene.add(cube);
 
         objects.push(cube);

@@ -22,7 +22,7 @@
     var camControls;
 
     var MAX_HEIGHT = 12;
-    var scale = chroma.scale(['blue','green','red']).domain([-64,100]);
+    var scale = chroma.scale(['blue', 'green', 'red']).domain([-64, 100]);
 
     function init() {
 
@@ -42,8 +42,8 @@
         // used http://reference.wolfram.com/mathematica/ref/ParametricPlot3D.html
         // as reference
         var paramFunction1 = function (u, v) {
-            var u = (u*2*Math.PI)-Math.PI;
-            var v = (v*2*Math.PI)-Math.PI;
+            var u = (u * 2 * Math.PI) - Math.PI;
+            var v = (v * 2 * Math.PI) - Math.PI;
 
             var x = Math.sin(u) * Math.sin(v) + 0.05 * Math.cos(20 * v);
             var y = Math.cos(u) * Math.sin(v) + 0.05 * Math.cos(20 * u);
@@ -55,8 +55,8 @@
 
         // create parametric and add to scene
         var paramFunction2 = function (u, v) {
-            var u = u*2*Math.PI;
-            var v = (v*2*Math.PI)-Math.PI;
+            var u = u * 2 * Math.PI;
+            var v = (v * 2 * Math.PI) - Math.PI;
 
             var x = Math.cos(u);
             var y = Math.sin(u) + Math.cos(v);
@@ -68,12 +68,12 @@
 
         // create parametric and add to scene
         var paramFunction3 = function (u, v) {
-            var u = u*2;
-            var v = (v*4*Math.PI);
+            var u = u * 2;
+            var v = (v * 4 * Math.PI);
 
-            var x = Math.cos(v)*Math.sin(u);
-            var y = Math.sin(v)*Math.sin(u);
-            var z = 0.2*v+(Math.cos(u)+Math.log(Math.tan(u/2)));
+            var x = Math.cos(v) * Math.sin(u);
+            var y = Math.sin(v) * Math.sin(u);
+            var z = 0.2 * v + (Math.cos(u) + Math.log(Math.tan(u / 2)));
 
 
             return new THREE.Vector3(x, y, z);
@@ -86,24 +86,24 @@
             var n = 3;
             var m = 1;
 
-            var u = u*4*Math.PI;
-            var v = v*2*Math.PI;
+            var u = u * 4 * Math.PI;
+            var v = v * 2 * Math.PI;
 
-            var x = (a + Math.cos(n*u/2.0) * Math.sin(v) - Math.sin(n*u/2.0) * Math.sin(2*v)) * Math.cos(m*u/2.0);
-            var y = (a + Math.cos(n*u/2.0) * Math.sin(v) - Math.sin(n*u/2.0) * Math.sin(2*v)) * Math.sin(m*u/2.0);
-            var z = Math.sin(n*u/2.0) * Math.sin(v) + Math.cos(n*u/2.0) * Math.sin(2*v);
+            var x = (a + Math.cos(n * u / 2.0) * Math.sin(v) - Math.sin(n * u / 2.0) * Math.sin(2 * v)) * Math.cos(m * u / 2.0);
+            var y = (a + Math.cos(n * u / 2.0) * Math.sin(v) - Math.sin(n * u / 2.0) * Math.sin(2 * v)) * Math.sin(m * u / 2.0);
+            var z = Math.sin(n * u / 2.0) * Math.sin(v) + Math.cos(n * u / 2.0) * Math.sin(2 * v);
 
             return new THREE.Vector3(x, y, z);
         }
 
         var paramFunction5 = function (u, v) {
 
-            var u = u*Math.PI*2;
-            var v = v*8*Math.PI;
+            var u = u * Math.PI * 2;
+            var v = v * 8 * Math.PI;
 
-            var x = Math.pow(1.2,v)*Math.pow((Math.sin(u)),0.5) * Math.sin(v);
-            var y = v*Math.sin(u) * Math.cos(u);
-            var z = Math.pow(1.2,v)*Math.pow((Math.sin(u)),0.3) * Math.cos(v);
+            var x = Math.pow(1.2, v) * Math.pow((Math.sin(u)), 0.5) * Math.sin(v);
+            var y = v * Math.sin(u) * Math.cos(u);
+            var z = Math.pow(1.2, v) * Math.pow((Math.sin(u)), 0.3) * Math.cos(v);
 //            v*(sin(u)**2 *sin(v))
 
             return new THREE.Vector3(x, y, z);
@@ -111,14 +111,11 @@
         }
 
 
-
-
-
         createSuperShape();
 
         var directionalLight = new THREE.DirectionalLight();
         directionalLight.position.set(-30, 50, 50);
-        directionalLight.intensity=2;
+        directionalLight.intensity = 2;
         scene.add(directionalLight);
 
 //        var geom = new THREE.ParametricGeometry(paramFunction5, 100, 100);
@@ -128,7 +125,6 @@
 //        mesh.scale.set(2,2,2);
 //        console.log(geom);
 //        scene.add(mesh);
-
 
 
         // position and point the camera to the center of the scene
@@ -221,7 +217,11 @@
 
 //        var mesh = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({shading: THREE.SmoothShading}));
 //
-        var mat = new THREE.MeshLambertMaterial({color:0xcc3333a, side: THREE.DoubleSide, shading: THREE.SmoothShading});
+        var mat = new THREE.MeshLambertMaterial({
+            color: 0xcc3333a,
+            side: THREE.DoubleSide,
+            shading: THREE.SmoothShading
+        });
         mat.vertexColors = THREE.FaceColors;
         var mesh = new THREE.Mesh(geometry, mat);
         mesh.name = 'param';

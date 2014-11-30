@@ -41,9 +41,9 @@
 
         var sphereGeometry = new THREE.SphereGeometry(3, 10, 10);
         var count = 0;
-        sphereGeometry.faces.forEach(function(face) {
+        sphereGeometry.faces.forEach(function (face) {
             face.materialIndex = count++;
-            var material = new THREE.MeshBasicMaterial({color:Math.abs(Math.sin(count/70))*0xff0000});
+            var material = new THREE.MeshBasicMaterial({color: Math.abs(Math.sin(count / 70)) * 0xff0000});
             material.side = THREE.DoubleSide;
             if (count % 2 == 0) {
                 material.transparent = true;
@@ -53,9 +53,9 @@
         });
 
         var sphere = new THREE.Mesh(sphereGeometry, new THREE.MeshFaceMaterial(materials));
-        sphere.name='sphere';
+        sphere.name = 'sphere';
         scene.add(sphere);
-        sphere.position.y=3;
+        sphere.position.y = 3;
 
         addFloor();
 
@@ -74,7 +74,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -86,15 +86,15 @@
 
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 8, 8 );
+        floorMaterial.map.repeat.set(8, 8);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         scene.add(floorMesh);
     }
 
@@ -106,8 +106,8 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('sphere').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('sphere').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('sphere').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('sphere').scale.set(control.scale, control.scale, control.scale);
 
         requestAnimationFrame(render);
     }

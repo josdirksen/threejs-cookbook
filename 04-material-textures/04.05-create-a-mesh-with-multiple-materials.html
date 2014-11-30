@@ -36,17 +36,17 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cylinderGeometry = new THREE.CylinderGeometry(3, 5, 10,20);
+        var cylinderGeometry = new THREE.CylinderGeometry(3, 5, 10, 20);
 
         // create the materials
-        var material1 = new THREE.MeshLambertMaterial({color:0xff0000, transparent: true, opacity: 0.7});
-        var material2 = new THREE.MeshBasicMaterial({wireframe:true});
+        var material1 = new THREE.MeshLambertMaterial({color: 0xff0000, transparent: true, opacity: 0.7});
+        var material2 = new THREE.MeshBasicMaterial({wireframe: true});
 
 
         var cylinder = THREE.SceneUtils.createMultiMaterialObject(cylinderGeometry, [material1, material2]);
-        cylinder.name='sphere';
+        cylinder.name = 'sphere';
         scene.add(cylinder);
-        cylinder.position.y=3;
+        cylinder.position.y = 3;
 
         addFloor();
 
@@ -72,15 +72,15 @@
 
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/tiles.jpg");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 4, 4 );
+        floorMaterial.map.repeat.set(4, 4);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         scene.add(floorMesh);
     }
 

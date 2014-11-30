@@ -42,11 +42,10 @@
         cubeNormalMaterial.normalMap = THREE.ImageUtils.loadTexture("../assets/textures/chesterfield-normal.png");
 
 
-
         normalCube = new THREE.Mesh(cubeGeometry, cubeNormalMaterial);
-        normalCube.name='normalCube';
-        normalCube.position.x=13;
-        normalCube.position.z=-5;
+        normalCube.name = 'normalCube';
+        normalCube.position.x = 13;
+        normalCube.position.z = -5;
         scene.add(normalCube);
 
         // create a normal cube and add to scene
@@ -56,9 +55,9 @@
 
 
         cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='bumpCube';
-        cube.position.x=-13;
-        cube.position.z=-5;
+        cube.name = 'bumpCube';
+        cube.position.x = -13;
+        cube.position.z = -5;
         scene.add(cube);
 
 //        var ambiLight = new THREE.AmbientLight(0xaaaaaa);
@@ -81,7 +80,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotSpeed = 0.005;
             this.normalScaleX = cubeNormalMaterial.normalScale.x;
             this.normalScaleY = cubeNormalMaterial.normalScale.y;
@@ -103,10 +102,10 @@
     function render() {
         renderer.render(scene, camera);
 
-        cube.rotation.y+=control.rotSpeed;
-        normalCube.rotation.y-=control.rotSpeed;
-        cube.rotation.x+=control.rotSpeed;
-        normalCube.rotation.x-=control.rotSpeed;
+        cube.rotation.y += control.rotSpeed;
+        normalCube.rotation.y -= control.rotSpeed;
+        cube.rotation.x += control.rotSpeed;
+        normalCube.rotation.x -= control.rotSpeed;
 
         normalCube.material.normalScale.x = control.normalScaleX;
         normalCube.material.normalScale.y = control.normalScaleY;

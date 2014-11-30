@@ -40,7 +40,7 @@
 
         // create a cube and add to scene
         var loader = new THREE.OBJLoader();
-        loader.load("../assets/models/blender/uvmap.obj", function(model) {
+        loader.load("../assets/models/blender/uvmap.obj", function (model) {
             model.children[0].material.map = THREE.ImageUtils.loadTexture("../assets/textures/debug.png");
             cube = model;
             scene.add(model);
@@ -53,13 +53,13 @@
         camera.lookAt(scene.position);
 
         var light = new THREE.DirectionalLight();
-        light.position = camera.position;
+        light.position.copy(camera.position);
         scene.add(light);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 2;
         };
@@ -79,8 +79,9 @@
         renderer.render(scene, camera);
 
         if (cube) {
-            cube.rotation.x+=control.rotationSpeed;
-            cube.scale.set(control.scale,control.scale,control.scale);
+            cube.rotation.x += control.rotationSpeed;
+            cube.rotation.y += control.rotationSpeed;
+            cube.scale.set(control.scale, control.scale, control.scale);
         }
 
 

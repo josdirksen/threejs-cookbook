@@ -15,9 +15,10 @@
 <body>
 
 <video id="video" autoplay loop style="display:none">
-    <source src="../assets/video/sintel_trailer-480p.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+    <source src="../assets/video/sintel_trailer-480p.ogv" type="video/ogg">
+    <source src="../assets/video/sintel_trailer-480p.mp4" type="video/mp4">
+    <source src="../assets/video/sintel_trailer-480p.webm" type="video/webm">
 </video>
-
 
 
 <script>
@@ -38,9 +39,9 @@
 
     function init() {
 
-        var video = document.getElementById( 'video' );
+        var video = document.getElementById('video');
 
-        videoTexture = new THREE.Texture( video );
+        videoTexture = new THREE.Texture(video);
         videoTexture.minFilter = THREE.LinearFilter;
         videoTexture.magFilter = THREE.LinearFilter;
         videoTexture.format = THREE.RGBFormat;
@@ -60,25 +61,25 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(1,9,20);
-        var cubeMaterial = new THREE.MeshBasicMaterial({map:videoTexture});
+        var cubeGeometry = new THREE.BoxGeometry(1, 9, 20);
+        var cubeMaterial = new THREE.MeshBasicMaterial({map: videoTexture});
 
         var materials = [];
         materials.push(cubeMaterial);
-        for (var i = 1 ; i < 6 ; i++) {
-            materials.push(new THREE.MeshLambertMaterial({color:0x33aa33}));
+        for (var i = 1; i < 6; i++) {
+            materials.push(new THREE.MeshLambertMaterial({color: 0x33aa33}));
         }
 
         var cube = new THREE.Mesh(cubeGeometry, new THREE.MeshFaceMaterial(materials));
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         var dirLightLeft = new THREE.DirectionalLight();
-        dirLightLeft.position.set(15,20,20);
+        dirLightLeft.position.set(15, 20, 20);
         scene.add(dirLightLeft);
 
         var dirLightRight = new THREE.DirectionalLight();
-        dirLightRight.position.set(-15,20,20);
+        dirLightRight.position.set(-15, 20, 20);
         scene.add(dirLightRight);
 
         // position and point the camera to the center of the scene
@@ -90,13 +91,12 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
         addControls(control);
 
-        // call the render function
         render();
     }
 
@@ -108,8 +108,8 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.y+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.y += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         videoTexture.needsUpdate = true;
 
@@ -118,6 +118,7 @@
 
     // calls the init function when the window is done loading.
     window.onload = init;
+
 
 </script>
 

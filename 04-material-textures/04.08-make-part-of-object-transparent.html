@@ -37,27 +37,24 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var sphereGeometry = new THREE.CubeGeometry(6, 6, 6);
+        var sphereGeometry = new THREE.BoxGeometry(6, 6, 6);
+//        var sphereGeometry = new THREE.SphereGeometry(6, 12, 12);
 
         var mat = new THREE.MeshPhongMaterial();
         mat.map = new THREE.ImageUtils.loadTexture("../assets/textures/partial-transparency.png");
         mat.shading = THREE.SmoothShading;
         mat.transparent = true;
         mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
-        mat.map.repeat.set( 4, 4 );
+        mat.map.repeat.set(4, 4);
         mat.depthWrite = false;
+        mat.side = THREE.DoubleSide;
         mat.color = new THREE.Color(0x00ff00);
-
-        console.log(mat);
-
 
 
 
         var sphere = new THREE.Mesh(sphereGeometry, mat);
-        sphere.name='sphere';
+        sphere.name = 'sphere';
         scene.add(sphere);
-
-//        addFloor();
 
         // add spotlight for the shadows
         var spotLight = new THREE.DirectionalLight(0xffffff);
@@ -74,7 +71,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -86,15 +83,15 @@
 
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 8, 8 );
+        floorMaterial.map.repeat.set(8, 8);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         scene.add(floorMesh);
     }
 
@@ -107,8 +104,8 @@
     function render() {
 
         renderer.render(scene, camera);
-        scene.getObjectByName('sphere').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('sphere').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('sphere').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('sphere').scale.set(control.scale, control.scale, control.scale);
 
         requestAnimationFrame(render);
     }

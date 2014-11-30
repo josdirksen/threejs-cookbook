@@ -44,7 +44,7 @@
 
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -57,7 +57,7 @@
         scene.add(ambientLight);
 
         var spotLight = new THREE.SpotLight();
-        spotLight.position.set(10,80,30);
+        spotLight.position.set(10, 80, 30);
         spotLight.castShadow = true;
         scene.add(spotLight);
 
@@ -66,24 +66,24 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
 
-            this.normal = function() {
+            this.normal = function () {
                 cubeMaterial.blending = THREE.NormalBlending;
             }
 
 
-            this.additive = function() {
+            this.additive = function () {
                 cubeMaterial.blending = THREE.AdditiveBlending;
             }
 
-            this.subtractive = function() {
+            this.subtractive = function () {
                 cubeMaterial.blending = THREE.SubtractiveBlending;
             }
 
-            this.multiply = function() {
+            this.multiply = function () {
                 cubeMaterial.blending = THREE.MultiplyBlending;
             }
 
@@ -103,16 +103,16 @@
     }
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 4, 4 );
+        floorMaterial.map.repeat.set(4, 4);
         floorMaterial.side = THREE.DoubleSide;
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         scene.add(floorMesh);
     }
 

@@ -42,9 +42,9 @@
         cubeBumpMaterial.bumpMap = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399-bump-map.jpg");
 
         bumpCube = new THREE.Mesh(cubeGeometry, cubeBumpMaterial);
-        bumpCube.name='bumpCube';
-        bumpCube.position.x=13;
-        bumpCube.position.z=-5;
+        bumpCube.name = 'bumpCube';
+        bumpCube.position.x = 13;
+        bumpCube.position.z = -5;
         scene.add(bumpCube);
 
         // create a normal cube and add to scene
@@ -54,9 +54,9 @@
 
 
         cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='bumpCube';
-        cube.position.x=-13;
-        cube.position.z=-5;
+        cube.name = 'bumpCube';
+        cube.position.x = -13;
+        cube.position.z = -5;
         scene.add(cube);
 
 //        var ambiLight = new THREE.AmbientLight(0xaaaaaa);
@@ -79,7 +79,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotSpeed = 0.005;
             this.bumpScale = cubeBumpMaterial.bumpScale;
 
@@ -99,8 +99,8 @@
     function render() {
         renderer.render(scene, camera);
 
-        cube.rotation.y+=control.rotSpeed;
-        bumpCube.rotation.y-=control.rotSpeed;
+        cube.rotation.y += control.rotSpeed;
+        bumpCube.rotation.y -= control.rotSpeed;
 
         bumpCube.material.bumpScale = control.bumpScale;
 

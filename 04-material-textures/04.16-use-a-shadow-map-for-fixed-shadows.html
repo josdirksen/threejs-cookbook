@@ -46,7 +46,7 @@
 
         // create a cube and add to scene
         var loader = new THREE.OBJLoader();
-        loader.load("../assets/models/blender/shadowmap.obj",function(model) {
+        loader.load("../assets/models/blender/shadowmap.obj", function (model) {
 
             // add the light map to the floor.
             var floor = model.children[3];
@@ -81,11 +81,10 @@
         camera.lookAt(scene.position);
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -103,9 +102,6 @@
 
     function render() {
         renderer.render(scene, camera);
-//        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-//        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
-
         requestAnimationFrame(render);
     }
 

@@ -44,7 +44,7 @@
         var cubeMaterial = new THREE.MeshLambertMaterial();
         cubeMaterial.map = new THREE.Texture(canvas);
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -54,18 +54,17 @@
         camera.lookAt(scene.position);
 
         var light = new THREE.DirectionalLight();
-        light.position.set(25,26,25);
+        light.position.set(25, 26, 25);
         scene.add(light);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
         addControls(control);
-
 
 
         // call the render function
@@ -74,8 +73,8 @@
 
     function setupCanvas() {
         var canvas = document.createElement('canvas');
-        canvas.width=512;
-        canvas.height=512;
+        canvas.width = 512;
+        canvas.height = 512;
 
 
         clock(canvas);
@@ -91,10 +90,10 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').rotation.y+=control.rotationSpeed;
-        scene.getObjectByName('cube').rotation.z+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').rotation.y += control.rotationSpeed;
+        scene.getObjectByName('cube').rotation.z += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         scene.getObjectByName('cube').material.map.needsUpdate = true;
         requestAnimationFrame(render);

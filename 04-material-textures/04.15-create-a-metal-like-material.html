@@ -47,11 +47,10 @@
         camera.lookAt(scene.position);
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };

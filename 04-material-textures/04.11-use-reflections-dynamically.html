@@ -54,14 +54,15 @@
         ];
 
         // create the cubemap
+//        var cubemap = THREE.ImageUtils.loadTextureCube(urls);
         var cubemap = THREE.ImageUtils.loadTextureCube(urls);
         cubemap.format = THREE.RGBFormat;
 
         // create a custom shader
-        var shader = THREE.ShaderLib[ "cube" ];
-        shader.uniforms[ "tCube" ].value = cubemap;
+        var shader = THREE.ShaderLib["cube"];
+        shader.uniforms["tCube"].value = cubemap;
 
-        var material = new THREE.ShaderMaterial( {
+        var material = new THREE.ShaderMaterial({
 
             fragmentShader: shader.fragmentShader,
             vertexShader: shader.vertexShader,
@@ -72,35 +73,35 @@
         });
 
         // create the skybox
-        var skybox = new THREE.Mesh( new THREE.BoxGeometry( 10000, 10000, 10000 ), material );
+        var skybox = new THREE.Mesh(new THREE.BoxGeometry(10000, 10000, 10000), material);
         scene.add(skybox);
 
-        cubeCamera = new THREE.CubeCamera( 0.1, 20000, 256 );
+        cubeCamera = new THREE.CubeCamera(0.1, 20000, 256);
         cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
-        scene.add( cubeCamera );
+        scene.add(cubeCamera);
 
         // create a sphere and add to scene
-        var sphereGeometry = new THREE.SphereGeometry(4,15,15);
-        var cubeGeometry = new THREE.BoxGeometry(5,5,5);
-        var cylinderGeometry = new THREE.CylinderGeometry(2,4,10, 20, 20, false);
+        var sphereGeometry = new THREE.SphereGeometry(4, 15, 15);
+        var cubeGeometry = new THREE.BoxGeometry(5, 5, 5);
+        var cylinderGeometry = new THREE.CylinderGeometry(2, 4, 10, 20, 20, false);
 
-        var dynamicEnvMaterial = new THREE.MeshBasicMaterial({envMap: cubeCamera.renderTarget , side: THREE.DoubleSide});
-        var envMaterial = new THREE.MeshBasicMaterial({envMap: cubemap , side: THREE.DoubleSide});
+        var dynamicEnvMaterial = new THREE.MeshBasicMaterial({envMap: cubeCamera.renderTarget, side: THREE.DoubleSide});
+        var envMaterial = new THREE.MeshBasicMaterial({envMap: cubemap, side: THREE.DoubleSide});
 //        envMaterial.refractionRatio = 0.95;
 
         sphere = new THREE.Mesh(sphereGeometry, dynamicEnvMaterial);
-        sphere.name='sphere';
+        sphere.name = 'sphere';
         scene.add(sphere);
 
         var cylinder = new THREE.Mesh(cylinderGeometry, envMaterial);
-        cylinder.name='cylinder';
+        cylinder.name = 'cylinder';
         scene.add(cylinder);
-        cylinder.position.set(10,0,0);
+        cylinder.position.set(10, 0, 0);
 
         var cube = new THREE.Mesh(cubeGeometry, envMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
-        cube.position.set(-10,0,0);
+        cube.position.set(-10, 0, 0);
 
         // position and point the camera to the center of the scene
         camera.position.x = 0;
@@ -111,7 +112,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -130,14 +131,14 @@
     function render() {
 
         sphere.visible = false;
-        cubeCamera.updateCubeMap( renderer, scene );
+        cubeCamera.updateCubeMap(renderer, scene);
         sphere.visible = true;
 
 
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').rotation.y+=control.rotationSpeed;
-        scene.getObjectByName('cylinder').rotation.x+=control.rotationSpeed;
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').rotation.y += control.rotationSpeed;
+        scene.getObjectByName('cylinder').rotation.x += control.rotationSpeed;
 
 
         requestAnimationFrame(render);

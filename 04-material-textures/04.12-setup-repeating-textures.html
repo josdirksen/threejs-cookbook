@@ -39,7 +39,7 @@
 
         // lights
         var dirLight = new THREE.SpotLight();
-        dirLight.position.set(25,46,33);
+        dirLight.position.set(25, 46, 33);
         scene.add(dirLight);
 
         // create a cube and add to scene
@@ -47,12 +47,11 @@
         var cubeMaterial = new THREE.MeshPhongMaterial();
         cubeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/webtreats_metal_6-512px.jpg");
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-        cubeMaterial.map.repeat.set( 2, 2 );
+        cubeMaterial.map.repeat.set(2, 2);
 
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
-
 
 
         // position and point the camera to the center of the scene
@@ -64,15 +63,15 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
             this.repeatX = 2;
             this.repeatY = 2;
 
-            this.changeRepeat = function() {
+            this.changeRepeat = function () {
                 var map = scene.getObjectByName('cube').material.map;
-                map.repeat.set( control.repeatX, control.repeatY );
+                map.repeat.set(control.repeatX, control.repeatY);
             }
         };
         addControls(control);
@@ -91,8 +90,8 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         requestAnimationFrame(render);
     }

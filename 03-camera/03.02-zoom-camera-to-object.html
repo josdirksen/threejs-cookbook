@@ -40,7 +40,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         var directionalLight = new THREE.DirectionalLight();
-        directionalLight.position.set(40,40,20);
+        directionalLight.position.set(40, 40, 20);
         scene.add(directionalLight);
 
 
@@ -50,8 +50,8 @@
         cubeMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png")
 
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
-        cube.position.set(0,0,0);
+        cube.name = 'cube';
+        cube.position.set(0, 0, 0);
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -63,11 +63,11 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.correctForDepth = 1.3;
             this.rotationSpeed = 0.01;
             this.scale = 1;
-            this.updateCamera = function() {
+            this.updateCamera = function () {
                 // create an helper
                 var helper = new THREE.BoundingBoxHelper(cube);
                 helper.update();
@@ -80,10 +80,10 @@
                 var center = boundingSphere.center;
                 var radius = boundingSphere.radius;
 
-                var distance = center.distanceTo(camera.position) - radius ;
+                var distance = center.distanceTo(camera.position) - radius;
                 var realHeight = Math.abs(helper.box.max.y - helper.box.min.y);
 
-                var fov = 2 * Math.atan( realHeight * control.correctForDepth / ( 2 * distance ) ) * ( 180 / Math.PI );
+                var fov = 2 * Math.atan(realHeight * control.correctForDepth / ( 2 * distance )) * ( 180 / Math.PI );
 
                 camera.fov = fov;
                 camera.updateProjectionMatrix();
@@ -98,14 +98,14 @@
         var gui = new dat.GUI();
         gui.add(controlObject, 'correctForDepth', 1, 3);
         gui.add(controlObject, 'updateCamera');
-        gui.add(controlObject, 'rotationSpeed',-1,1).step(0.001);
-        gui.add(controlObject, 'scale',0,2).step(0.001);
+        gui.add(controlObject, 'rotationSpeed', -1, 1).step(0.001);
+        gui.add(controlObject, 'scale', 0, 2).step(0.001);
     }
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         requestAnimationFrame(render);
     }

@@ -43,7 +43,7 @@
         scene.add(ambientLight);
 
         var spotLight = new THREE.SpotLight();
-        spotLight.position.set(10,80,30);
+        spotLight.position.set(10, 80, 30);
         spotLight.castShadow = true;
         scene.add(spotLight);
 
@@ -53,11 +53,10 @@
         addCube();
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotSpeed = 0.005;
             this.scale = 1;
         };
@@ -86,7 +85,7 @@
     }
 
     function addSphere() {
-        var sphereGeometry = new THREE.SphereGeometry(1.5,20,20);
+        var sphereGeometry = new THREE.SphereGeometry(1.5, 20, 20);
         var matProps = {
 
             specular: '#a9fcff',
@@ -98,31 +97,31 @@
         var sphereMaterial = new THREE.MeshPhongMaterial(matProps);
         var sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphereMesh.castShadow = true;
-        sphereMesh.position.y=0.75*Math.PI/2;
+        sphereMesh.position.y = 0.75 * Math.PI / 2;
         sphereMesh.name = 'sphere';
         scene.add(sphereMesh);
     }
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 8, 8 );
+        floorMaterial.map.repeat.set(8, 8);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         scene.add(floorMesh);
     }
 
     function addCube() {
-        var cubeGeometry = new THREE.BoxGeometry(2.5,4.5,10);
-        var cubeMaterial = new THREE.MeshLambertMaterial({color:0xff0000});
+        var cubeGeometry = new THREE.BoxGeometry(2.5, 4.5, 10);
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
         var cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cubeMesh.castShadow=true;
-        cubeMesh.receiveShadow=true;
-        cubeMesh.position.z=-5;
+        cubeMesh.castShadow = true;
+        cubeMesh.receiveShadow = true;
+        cubeMesh.position.z = -5;
         scene.add(cubeMesh);
     }
 

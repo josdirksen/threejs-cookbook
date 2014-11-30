@@ -30,9 +30,9 @@
         camera = new THREE.OrthographicCamera();
 
         camera.left = window.innerWidth / -2;
-        camera.right =  window.innerWidth / 2;
+        camera.right = window.innerWidth / 2;
         camera.top = window.innerHeight / 2;
-        camera.bottom = window.innerHeight / - 2;
+        camera.bottom = window.innerHeight / -2;
         camera.near = 0.1;
         camera.far = 1500;
 
@@ -52,12 +52,12 @@
 
         var dirLight = new THREE.DirectionalLight();
         scene.add(dirLight);
-        dirLight.position.set(-500,200,300);
+        dirLight.position.set(-500, 200, 300);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.left = camera.left;
             this.right = camera.right;
             this.top = camera.top;
@@ -65,7 +65,7 @@
             this.far = camera.far;
             this.near = camera.near;
 
-            this.updateCamera = function() {
+            this.updateCamera = function () {
                 camera.left = control.left;
                 camera.right = control.right;
                 camera.top = control.top;
@@ -79,8 +79,8 @@
 
         addControls(control);
 
-        for (var x = 0 ; x < 15 ; x++)  {
-            for (var y = 0 ; y < 15 ; y++)  {
+        for (var x = 0; x < 15; x++) {
+            for (var y = 0; y < 15; y++) {
                 addCube(x, y);
             }
         }
@@ -94,25 +94,25 @@
         // create a cube and add to scene
         var cubeGeometry = new THREE.BoxGeometry(50, 50, 50);
         var cubeMaterial = new THREE.MeshLambertMaterial();
-        cubeMaterial.color = new THREE.Color(0xffffff*Math.random())
+        cubeMaterial.color = new THREE.Color(0xffffff * Math.random())
         cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
-        cube.position.x=60 * x - 450;
-        cube.position.y=0;
-        cube.position.z=60 * y - 450;
+        cube.name = 'cube';
+        cube.position.x = 60 * x - 450;
+        cube.position.y = 0;
+        cube.position.z = 60 * y - 450;
         scene.add(cube);
 
     }
 
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject,'left',-1000, 0).onChange(controlObject.updateCamera);
-        gui.add(controlObject,'right',0, 1000).onChange(controlObject.updateCamera);
-        gui.add(controlObject,'top', 0, 1000).onChange(controlObject.updateCamera);
-        gui.add(controlObject,'bottom',-1000, 0).onChange(controlObject.updateCamera);
-        gui.add(controlObject,'far',100, 2000).onChange(controlObject.updateCamera);
-        gui.add(controlObject,'near',0,200).onChange(controlObject.updateCamera);
+        gui.add(controlObject, 'left', -1000, 0).onChange(controlObject.updateCamera);
+        gui.add(controlObject, 'right', 0, 1000).onChange(controlObject.updateCamera);
+        gui.add(controlObject, 'top', 0, 1000).onChange(controlObject.updateCamera);
+        gui.add(controlObject, 'bottom', -1000, 0).onChange(controlObject.updateCamera);
+        gui.add(controlObject, 'far', 100, 2000).onChange(controlObject.updateCamera);
+        gui.add(controlObject, 'near', 0, 200).onChange(controlObject.updateCamera);
     }
 
     function render() {

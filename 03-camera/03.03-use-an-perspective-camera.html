@@ -51,11 +51,11 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
+        var cubeGeometry = new THREE.BoxGeometry(10 * Math.random(), 10 * Math.random(), 10 * Math.random());
         var cubeMaterial = new THREE.MeshNormalMaterial();
         cubeMaterial.transparent = true;
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -69,7 +69,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
             this.aspect = camera.aspect;
@@ -77,7 +77,7 @@
             this.near = camera.near;
             this.fov = camera.fov;
 
-            this.updateCamera = function() {
+            this.updateCamera = function () {
                 camera.fov = control.fov;
                 camera.aspect = control.aspect;
                 camera.near = control.near;
@@ -96,16 +96,16 @@
         var gui = new dat.GUI();
         gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
         gui.add(controlObject, 'scale', 0.01, 2);
-        gui.add(controlObject, 'fov',0,180).onChange(control.updateCamera);
-        gui.add(controlObject, 'aspect',0,4).onChange(control.updateCamera);
-        gui.add(controlObject, 'near',0,40).onChange(control.updateCamera);
-        gui.add(controlObject, 'far',0,1000).onChange(control.updateCamera);
+        gui.add(controlObject, 'fov', 0, 180).onChange(control.updateCamera);
+        gui.add(controlObject, 'aspect', 0, 4).onChange(control.updateCamera);
+        gui.add(controlObject, 'near', 0, 40).onChange(control.updateCamera);
+        gui.add(controlObject, 'far', 0, 1000).onChange(control.updateCamera);
     }
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         requestAnimationFrame(render);
     }

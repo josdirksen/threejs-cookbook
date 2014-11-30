@@ -31,10 +31,10 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
+        var cubeGeometry = new THREE.BoxGeometry(10 * Math.random(), 10 * Math.random(), 10 * Math.random());
         var cubeMaterial = new THREE.MeshNormalMaterial();
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -46,34 +46,34 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        setupKeyLogger();
-//        setupKeyControls();
+//        setupKeyLogger();
+        setupKeyControls();
 
         // call the render function
         render();
     }
 
     function setupKeyLogger() {
-        document.onkeydown = function(e) {
+        document.onkeydown = function (e) {
             console.log(e);
         }
     }
 
     function setupKeyControls() {
         var cube = scene.getObjectByName('cube');
-        document.onkeydown = function(e) {
+        document.onkeydown = function (e) {
             switch (e.keyCode) {
                 case 37:
-                        cube.rotation.x+=0.1;
+                    cube.rotation.x += 0.2;
                     break;
                 case 38:
-                    cube.rotation.z-=0.1;
+                    cube.rotation.z -= 0.2;
                     break;
                 case 39:
-                    cube.rotation.x-=0.1;
+                    cube.rotation.x -= 0.2;
                     break;
                 case 40:
-                    cube.rotation.z+=0.1;
+                    cube.rotation.z += 0.2;
                     break;
             }
         };

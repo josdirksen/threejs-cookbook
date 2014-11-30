@@ -3,6 +3,8 @@
 <head>
     <title>01.01 - WebGLRenderer - Skeleton</title>
     <script src="../libs/three.js"></script>
+    <script src="../libs/CanvasRenderer.js"></script>
+    <script src="../libs/Projector.js"></script>
     <style>
         body {
             margin: 0;
@@ -31,7 +33,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
+        var cubeGeometry = new THREE.BoxGeometry(10 * Math.random(), 10 * Math.random(), 10 * Math.random());
         var cubeMaterial = new THREE.MeshNormalMaterial();
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         scene.add(cube);

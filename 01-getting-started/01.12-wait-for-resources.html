@@ -21,19 +21,37 @@
 
     function init() {
         loadModel(model)
-                .then(function(result) {return loadTexture(texture)})
-                .then(function(result) {return loadModel(model)})
-                .then(function(result) {return loadTexture(texture)})
-                .then(function(result) {return loadOthers(resource)})
-                .then(function(result) {return loadModelWithProgress(model)})
-                .then(function(result) {return loadModel(model)})
-                .then(function(result) {return loadOthers(resource)})
-                .then(function(result) {return loadModel(model)})
-                .then(function() {console.log("All done with sequence")})
-                .catch(function(error) {
-                    console.log("Error occured in sequence:",error);
+                .then(function (result) {
+                    return loadTexture(texture)
                 })
-                .progress(function(e){
+                .then(function (result) {
+                    return loadModel(model)
+                })
+                .then(function (result) {
+                    return loadTexture(texture)
+                })
+                .then(function (result) {
+                    return loadOthers(resource)
+                })
+                .then(function (result) {
+                    return loadModelWithProgress(model)
+                })
+                .then(function (result) {
+                    return loadModel(model)
+                })
+                .then(function (result) {
+                    return loadOthers(resource)
+                })
+                .then(function (result) {
+                    return loadModel(model)
+                })
+                .then(function () {
+                    console.log("All done with sequence")
+                })
+                .catch(function (error) {
+                    console.log("Error occured in sequence:", error);
+                })
+                .progress(function (e) {
                     console.log("Progress event received:", e);
                 });
     }
@@ -45,10 +63,10 @@
     function loadTexture(texture) {
 
         var deferred = Q.defer();
-        var text = THREE.ImageUtils.loadTexture(texture, null, function(loaded) {
+        var text = THREE.ImageUtils.loadTexture(texture, null, function (loaded) {
             console.log("Loaded texture: ", texture);
             deferred.resolve(loaded);
-        }, function(error){
+        }, function (error) {
             deferred.reject(error);
         });
 
@@ -62,10 +80,10 @@
 
         var deferred = Q.defer();
         var jsonLoader = new THREE.JSONLoader();
-        jsonLoader.load(model,function(loaded) {
+        jsonLoader.load(model, function (loaded) {
             console.log("Loaded model: ", model);
             deferred.resolve(loaded);
-        },null);
+        }, null);
 
         return deferred.promise;
     }
@@ -78,12 +96,12 @@
         var deferred = Q.defer();
 
         var xhrLoader = new THREE.XHRLoader();
-        xhrLoader.load(res, function(loaded) {
+        xhrLoader.load(res, function (loaded) {
             console.log("Loaded other: ", res);
             deferred.resolve(loaded);
-        }, function(progress) {
+        }, function (progress) {
             deferred.notify(progress);
-        }, function(error){
+        }, function (error) {
             deferred.reject(error);
         });
 
@@ -94,12 +112,14 @@
         var deferred = Q.defer();
 
         var jsonLoader = new THREE.JSONLoader();
-        jsonLoader.loadAjaxJSON(jsonLoader,model,
-                function(model){
+        jsonLoader.loadAjaxJSON(jsonLoader, model,
+                function (model) {
                     console.log("Loaded model with progress: ", model);
                     deferred.resolve(model)
-                },null,
-                function(progress){deferred.notify(progress)});
+                }, null,
+                function (progress) {
+                    deferred.notify(progress)
+                });
 
         return deferred.promise;
     }

@@ -31,10 +31,10 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
+        var cubeGeometry = new THREE.BoxGeometry(10 * Math.random(), 10 * Math.random(), 10 * Math.random());
         var cubeMaterial = new THREE.MeshNormalMaterial();
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -52,7 +52,7 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=0.05;
+        scene.getObjectByName('cube').rotation.x += 0.05;
         requestAnimationFrame(render);
     }
 

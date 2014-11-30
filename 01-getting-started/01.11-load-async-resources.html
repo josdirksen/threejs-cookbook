@@ -21,10 +21,10 @@
         // load with error
 //        console.log('Before async');
         loadOthers(resource);
-//        loadTexture(texture);
-//        loadTexture(texture404);
-//        loadModel(model);
-//        loadModelWithProgress(model);
+        loadTexture(texture);
+        loadTexture(texture404);
+        loadModel(model);
+        loadModelWithProgress(model);
     }
 
     /**
@@ -40,12 +40,12 @@
      */
     function loadModel(model) {
         var jsonLoader = new THREE.JSONLoader();
-        jsonLoader.load(model,onLoadCallback,null);
+        jsonLoader.load(model, onLoadCallback, null);
     }
 
     function loadModelWithProgress(model) {
         var jsonLoader = new THREE.JSONLoader();
-        jsonLoader.loadAjaxJSON(jsonLoader,model, onLoadCallback, null, onProgressCallback);
+        jsonLoader.loadAjaxJSON(jsonLoader, model, onLoadCallback, null, onProgressCallback);
 
     }
 
@@ -61,18 +61,18 @@
     function onLoadCallback(loaded) {
         // just output the length for arrays and binary blobs
         if (loaded.length) {
-            console.log("Loaded",loaded.length);
+            console.log("Loaded", loaded.length);
         } else {
-            console.log("Loaded",loaded);
+            console.log("Loaded", loaded);
         }
     }
 
     function onProgressCallback(progress) {
-        console.log("Progress",progress);
+        console.log("Progress", progress);
     }
 
     function onErrorCallback(error) {
-        console.log("Error",error)
+        console.log("Error", error)
     }
 
     // calls the init function when the window is done loading.

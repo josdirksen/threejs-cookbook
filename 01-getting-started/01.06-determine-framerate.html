@@ -33,7 +33,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // create a cube and add to scene
-        var cubeGeometry = new THREE.BoxGeometry(10*Math.random(), 10*Math.random(), 10*Math.random());
+        var cubeGeometry = new THREE.BoxGeometry(10 * Math.random(), 10 * Math.random(), 10 * Math.random());
         var cubeMaterial = new THREE.MeshNormalMaterial();
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.name = 'cube';
@@ -50,7 +50,7 @@
 
         // create the stats
         stats = createStats();
-        document.body.appendChild( stats.domElement );
+        document.body.appendChild(stats.domElement);
 
         // call the render function
         render();
@@ -70,7 +70,7 @@
     function render() {
         requestAnimationFrame(render);
 
-        scene.getObjectByName('cube').rotation.x+=0.05;
+        scene.getObjectByName('cube').rotation.x += 0.05;
         renderer.render(scene, camera);
         stats.update();
     }

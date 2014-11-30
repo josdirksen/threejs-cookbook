@@ -17,7 +17,7 @@
 </head>
 <script>
 
-//    Show how to use an ambient light to soften the harsh directional lighting
+    //    Show how to use an ambient light to soften the harsh directional lighting
 
     // global variables
     var renderer;
@@ -51,7 +51,7 @@
         addCow();
         addFloor();
 
-        addPointLight(0xff0000, new THREE.Vector3(-100, 20, 100) , 'light');
+        addPointLight(0xff0000, new THREE.Vector3(-100, 20, 100), 'light');
         addDirectionalLight(scene);
 
         // position and point the camera to the center of the scene
@@ -63,7 +63,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -74,92 +74,92 @@
     }
 
 
-function addDirectionalLight(scene) {
-    var directionalLight = new THREE.DirectionalLight();
-    directionalLight.position = new THREE.Vector3(70,40,-50);
-    directionalLight.castShadow = true;
-    directionalLight.shadowCameraVisible = false;
-    directionalLight.shadowCameraNear = 25;
-    directionalLight.shadowCameraFar = 200;
-    directionalLight.shadowCameraLeft = -50;
-    directionalLight.shadowCameraRight = 50;
-    directionalLight.shadowCameraTop = 50;
-    directionalLight.shadowCameraBottom = -50;
-    directionalLight.shadowMapWidth = 2048;
-    directionalLight.shadowMapHeight = 2048;
+    function addDirectionalLight(scene) {
+        var directionalLight = new THREE.DirectionalLight();
+        directionalLight.position.copy(new THREE.Vector3(70, 40, -50));
+        directionalLight.castShadow = true;
+        directionalLight.shadowCameraVisible = false;
+        directionalLight.shadowCameraNear = 25;
+        directionalLight.shadowCameraFar = 200;
+        directionalLight.shadowCameraLeft = -50;
+        directionalLight.shadowCameraRight = 50;
+        directionalLight.shadowCameraTop = 50;
+        directionalLight.shadowCameraBottom = -50;
+        directionalLight.shadowMapWidth = 2048;
+        directionalLight.shadowMapHeight = 2048;
 
-    directionalLight.name = 'dirLight';
-    scene.add(directionalLight);
-}
-
-function addCow() {
-    var loader = new THREE.OBJMTLLoader();
-    loader.load("../assets/models/cow/cowTM08New00RTime02.obj", "../assets/models/cow/cowTM08New00RTime02.mtl", function(cow) {
-
-        cow.scale.set(3,3,3);
-        cow.translateY(9);
-
-        // small fix of the material for better import
-        cow.children[1].children[1].geometry.computeVertexNormals();
-        cow.children[1].children[1].geometry.computeFaceNormals();
-        cow.children[1].children[1].geometry.computeTangents();
-        cow.children[1].children[1].material.opacity=1;
-        cow.children[1].children[1].material.shading = THREE.SmoothShading;
-        cow.children[1].children[1].castShadow = true;
-
-        scene.add(cow);
-    });
-}
-
-function addAmbientLight(scene) {
-    var ambientLight = new THREE.AmbientLight(0x332222);
-    ambientLight.name = 'ambientLight';
-    scene.add(ambientLight);
-}
-
-function addFloor() {
-    var floorGeometry = new THREE.PlaneGeometry(2000,2000,20,20);
-    var floorMaterial = new THREE.MeshPhongMaterial({color:0xffffff});
-    floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399.jpg");
-    floorMaterial.bumpMap = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399-bump-map.jpg");
-
-    floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-    floorMaterial.map.repeat.set( 28, 28 );
-    floorMaterial.bumpMap.wrapS = floorMaterial.bumpMap.wrapT = THREE.RepeatWrapping;
-    floorMaterial.bumpMap.repeat.set( 28, 28 );
-
-    var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-    floorMesh.receiveShadow = true;
-    floorMesh.rotation.x = -0.5*Math.PI;
-    floorMesh.name = 'floor';
-    scene.add(floorMesh);
-}
-
-function addPointLight(color, position, name) {
-    var pointLight = new THREE.PointLight();
-    pointLight.color = new THREE.Color(color);
-    pointLight.intensity = 2;
-    pointLight.distance = 60;
-
-    pointLight.position = position;
-    pointLight.name=name;
-    scene.add(pointLight);
-
-    var bulbMat = new THREE.MeshBasicMaterial();
-    bulbMat.color = new THREE.Color(color);
-    pointLight.add(new THREE.Mesh(new THREE.SphereGeometry(0.2), bulbMat));
-}
-
-var pos = 0;
-function positionLight() {
-    light = scene.getObjectByName('light');
-    if (pos <= 1) {
-        light.position = spline.getPointAt(pos);
-        pos += 0.001
-    } else {
-        pos = 0;
+        directionalLight.name = 'dirLight';
+        scene.add(directionalLight);
     }
-}
+
+    function addCow() {
+        var loader = new THREE.OBJMTLLoader();
+        loader.load("../assets/models/cow/cowTM08New00RTime02.obj", "../assets/models/cow/cowTM08New00RTime02.mtl", function (cow) {
+
+            cow.scale.set(3, 3, 3);
+            cow.translateY(9);
+
+            // small fix of the material for better import
+            cow.children[1].children[1].geometry.computeVertexNormals();
+            cow.children[1].children[1].geometry.computeFaceNormals();
+            cow.children[1].children[1].geometry.computeTangents();
+            cow.children[1].children[1].material.opacity = 1;
+            cow.children[1].children[1].material.shading = THREE.SmoothShading;
+            cow.children[1].children[1].castShadow = true;
+
+            scene.add(cow);
+        });
+    }
+
+    function addAmbientLight(scene) {
+        var ambientLight = new THREE.AmbientLight(0x332222);
+        ambientLight.name = 'ambientLight';
+        scene.add(ambientLight);
+    }
+
+    function addFloor() {
+        var floorGeometry = new THREE.PlaneGeometry(2000, 2000, 20, 20);
+        var floorMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});
+        floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399.jpg");
+        floorMaterial.bumpMap = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399-bump-map.jpg");
+
+        floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+        floorMaterial.map.repeat.set(28, 28);
+        floorMaterial.bumpMap.wrapS = floorMaterial.bumpMap.wrapT = THREE.RepeatWrapping;
+        floorMaterial.bumpMap.repeat.set(28, 28);
+
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -0.5 * Math.PI;
+        floorMesh.name = 'floor';
+        scene.add(floorMesh);
+    }
+
+    function addPointLight(color, position, name) {
+        var pointLight = new THREE.PointLight();
+        pointLight.color = new THREE.Color(color);
+        pointLight.intensity = 2;
+        pointLight.distance = 60;
+
+        pointLight.position.copy(position);
+        pointLight.name = name;
+        scene.add(pointLight);
+
+        var bulbMat = new THREE.MeshBasicMaterial();
+        bulbMat.color = new THREE.Color(color);
+        pointLight.add(new THREE.Mesh(new THREE.SphereGeometry(0.2), bulbMat));
+    }
+
+    var pos = 0;
+    function positionLight() {
+        light = scene.getObjectByName('light');
+        if (pos <= 1) {
+            light.position.copy(spline.getPointAt(pos));
+            pos += 0.001
+        } else {
+            pos = 0;
+        }
+    }
 
     function createSpline() {
         spline = new THREE.SplineCurve3([

@@ -14,7 +14,7 @@
 </head>
 <script>
 
-//    Show how to use an ambient light to soften the harsh directional lighting
+    //    Show how to use an ambient light to soften the harsh directional lighting
 
     // global variables
     var renderer;
@@ -47,11 +47,10 @@
         orbit = new THREE.OrbitControls(camera);
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.ambientLight = true;
             this.directionalLight = true;
             this.rotSpeed = 0.01;
@@ -74,22 +73,22 @@
     }
 
     function addObjects(scene) {
-        var sphereGeom = new THREE.SphereGeometry(4,10,10);
-        var cubeGeom = new THREE.CubeGeometry(4,2,8);
-        var cylinderGeom = new THREE.CylinderGeometry(4,4,10);
+        var sphereGeom = new THREE.SphereGeometry(4, 10, 10);
+        var cubeGeom = new THREE.CubeGeometry(4, 2, 8);
+        var cylinderGeom = new THREE.CylinderGeometry(4, 4, 10);
 
-        var material = new THREE.MeshPhongMaterial({color:0x0099ff});
+        var material = new THREE.MeshPhongMaterial({color: 0x0099ff});
         material.shading = THREE.FlatShading;
         var sphereMesh = new THREE.Mesh(sphereGeom, material);
-        sphereMesh.position.set(0,1,0);
+        sphereMesh.position.set(0, 1, 0);
         sphereMesh.castShadow = true;
 
         var cubeMesh = new THREE.Mesh(cubeGeom, material);
-        cubeMesh.position.set(-20,1,0);
+        cubeMesh.position.set(-20, 1, 0);
         cubeMesh.castShadow = true;
 
         var cylMesh = new THREE.Mesh(cylinderGeom, material);
-        cylMesh.position.set(20,5,0);
+        cylMesh.position.set(20, 5, 0);
         cylMesh.castShadow = true;
 
         scene.add(sphereMesh);
@@ -98,15 +97,14 @@
     }
 
 
-
     function addDirectionalLight(scene) {
         var directionalLight = new THREE.DirectionalLight();
-        directionalLight.position = new THREE.Vector3(50,30,-50);
+        directionalLight.position.copy(new THREE.Vector3(50, 30, -50));
         directionalLight.castShadow = true;
         directionalLight.shadowCameraNear = 25;
-        directionalLight.shadowCameraFar = 100;
-        directionalLight.shadowCameraLeft = -50;
-        directionalLight.shadowCameraRight = 50;
+        directionalLight.shadowCameraFar = 200;
+        directionalLight.shadowCameraLeft = -150;
+        directionalLight.shadowCameraRight = 150;
         directionalLight.shadowCameraTop = 50;
         directionalLight.shadowCameraBottom = -50;
         directionalLight.shadowMapWidth = 2048;
@@ -120,23 +118,27 @@
 
     function addControls(controlObject) {
         var gui = new dat.GUI();
-        gui.add(controlObject, 'ambientLight').onChange(function(e) {scene.getObjectByName('ambientLight').visible = e});
-        gui.add(controlObject, 'directionalLight').onChange(function(e) {scene.getObjectByName('dirLight').visible = e});
+        gui.add(controlObject, 'ambientLight').onChange(function (e) {
+            scene.getObjectByName('ambientLight').visible = e
+        });
+        gui.add(controlObject, 'directionalLight').onChange(function (e) {
+            scene.getObjectByName('dirLight').visible = e
+        });
     }
 
-function addFloor() {
-    var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
-    var floorMaterial = new THREE.MeshPhongMaterial();
-    floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png");
+    function addFloor() {
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
+        var floorMaterial = new THREE.MeshPhongMaterial();
+        floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/wood_1-1024x1024.png");
 
-    floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-    floorMaterial.map.repeat.set( 4, 4 );
-    floorMaterial.side = THREE.DoubleSide;
-    var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-    floorMesh.receiveShadow = true;
-    floorMesh.rotation.x = -0.5*Math.PI;
-    scene.add(floorMesh);
-}
+        floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
+        floorMaterial.map.repeat.set(4, 4);
+        floorMaterial.side = THREE.DoubleSide;
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.receiveShadow = true;
+        floorMesh.rotation.x = -0.5 * Math.PI;
+        scene.add(floorMesh);
+    }
 
     function render() {
         renderer.render(scene, camera);

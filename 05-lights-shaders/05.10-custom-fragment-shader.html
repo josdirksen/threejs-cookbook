@@ -33,6 +33,7 @@
 
 
     }
+
 </script>
 
 <script>
@@ -69,8 +70,8 @@
         var basicShader = THREE.ShaderLib['normal'];
 
         uniforms.delta = {type: 'f', value: 0.0};
-        uniforms.mNear = { type: "f", value: 1.0 };
-        uniforms.mFar = { type: "f", value: 60.0 };
+        uniforms.mNear = {type: "f", value: 1.0};
+        uniforms.mFar = {type: "f", value: 60.0};
 
 
         // since we use a texture, we need to inform three.js
@@ -85,7 +86,7 @@
         // create a cube and add to scene
         var cubeGeometry = new THREE.BoxGeometry(5, 15, 5);
         var cube = new THREE.Mesh(cubeGeometry, material);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -97,7 +98,7 @@
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -115,8 +116,8 @@
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
         uniforms.delta.value += 0.005;
 

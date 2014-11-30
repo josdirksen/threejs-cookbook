@@ -53,21 +53,18 @@
         document.body.appendChild(renderer.domElement);
 
         var loader = new THREE.OBJMTLLoader();
-        loader.load("../assets/models/shark/Shark.obj", "../assets/models/shark/Shark.mtl", function(shark) {
+        loader.load("../assets/models/shark/Shark.obj", "../assets/models/shark/Shark.mtl", function (shark) {
 
-            console.log(shark);
-
-//            shark.scale.set(1,1,1);
-            shark.children.forEach(function(e) {
+            shark.children.forEach(function (e) {
                 e.geometry.computeVertexNormals();
                 e.geometry.computeFaceNormals();
                 e.geometry.computeTangents();
             });
 
             var shark2 = shark.clone();
-            shark2.position.x=20;
+            shark2.position.x = 20;
             var shark3 = shark.clone();
-            shark3.position.x=-20;
+            shark3.position.x = -20;
 
             scene.add(shark);
             scene.add(shark2);
@@ -75,12 +72,11 @@
         });
 
 
-
-        addPointLight(0xff0000, new THREE.Vector3(-30,0,0), 'sl1');
-        addPointLight(0x00ff00, new THREE.Vector3(-10,0,0), 'sl2');
-        addPointLight(0xffffff, new THREE.Vector3(10,0,0), 'sl3');
-        addPointLight(0x0000ff, new THREE.Vector3(30,0,0), 'sl4');
-        control = new function() {
+        addPointLight(0xff0000, new THREE.Vector3(-30, 0, 0), 'sl1');
+        addPointLight(0x00ff00, new THREE.Vector3(-10, 0, 0), 'sl2');
+        addPointLight(0xffffff, new THREE.Vector3(10, 0, 0), 'sl3');
+        addPointLight(0x0000ff, new THREE.Vector3(30, 0, 0), 'sl4');
+        control = new function () {
 
 
             this.count = 0.01;
@@ -98,8 +94,8 @@
         pointLight.intensity = 3;
         pointLight.distance = 60;
 
-        pointLight.position = position;
-        pointLight.name=name;
+        pointLight.position.copy(position);
+        pointLight.name = name;
         scene.add(pointLight);
 
         var bulbMat = new THREE.MeshBasicMaterial();
@@ -118,17 +114,13 @@
 
 
         var light = scene.getObjectByName('sl1');
-        light.position.y = 15 * Math.sin(control.count+=0.005);
+        light.position.y = 15 * Math.sin(control.count += 0.005);
         var light = scene.getObjectByName('sl2');
-        light.position.y = 15 * Math.sin((control.count+=0.005) + 0.5*Math.PI);
+        light.position.y = 15 * Math.sin((control.count += 0.005) + 0.5 * Math.PI);
         var light = scene.getObjectByName('sl3');
-        light.position.y = 15 * Math.sin((control.count+=0.005) + 1.0*Math.PI);
+        light.position.y = 15 * Math.sin((control.count += 0.005) + 1.0 * Math.PI);
         var light = scene.getObjectByName('sl4');
-        light.position.y = 15 * Math.sin((control.count+=0.005) + 1.5*Math.PI);
-
-
-//        light.position.y = y * Math.cos(control.rotSpeed);
-//        console.log(y);
+        light.position.y = 15 * Math.sin((control.count += 0.005) + 1.5 * Math.PI);
 
 
         light.lookAt(scene.position);

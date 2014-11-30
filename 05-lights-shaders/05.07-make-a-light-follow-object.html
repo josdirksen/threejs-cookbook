@@ -42,11 +42,11 @@
         renderer.shadowMapEnabled = true;
 
         var obj = new THREE.Object3D();
-        obj.position = new THREE.Vector3(10,10,10);
+        obj.position = new THREE.Vector3(10, 10, 10);
         scene.add(obj);
 
         spotLight = new THREE.SpotLight();
-        spotLight.position.set(20,80,30);
+        spotLight.position.set(20, 80, 30);
         spotLight.castShadow = true;
         spotLight.angle = 0.15;
         spotLight.distance = 160;
@@ -65,56 +65,55 @@
     }
 
     function addBouncingSphere() {
-        var sphereGeometry = new THREE.SphereGeometry(1.5,20,20);
+        var sphereGeometry = new THREE.SphereGeometry(1.5, 20, 20);
         var matProps = {
 
-            specular: '#a9fcff',
-            color: '#00abb1',
-            emissive: '#006063',
+            specular: 0xa9fcff,
+            color: 0x00abb1,
+            emissive: 0x006063,
             shininess: 10
         }
 
         var sphereMaterial = new THREE.MeshPhongMaterial(matProps);
         var sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphereMesh.castShadow = true;
-        sphereMesh.position.y=0.75*Math.PI/2;
+        sphereMesh.position.y = 0.75 * Math.PI / 2;
         sphereMesh.name = 'sphere';
         scene.add(sphereMesh);
     }
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/floor_2-1024x1024.png");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 8, 8 );
+        floorMaterial.map.repeat.set(8, 8);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         scene.add(floorMesh);
     }
 
     function addCube() {
-        var cubeGeometry = new THREE.BoxGeometry(2.5,4.5,20);
-        var cubeMaterial = new THREE.MeshLambertMaterial({color:0xff0000});
+        var cubeGeometry = new THREE.BoxGeometry(2.5, 4.5, 20);
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
         var cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cubeMesh.castShadow=true;
-        cubeMesh.receiveShadow=true;
-        cubeMesh.position.z=-5;
+        cubeMesh.castShadow = true;
+        cubeMesh.receiveShadow = true;
+        cubeMesh.position.z = -5;
         scene.add(cubeMesh);
     }
 
-    var step=0;
+    var step = 0;
     function render() {
         var sphere = scene.getObjectByName('sphere');
         renderer.render(scene, camera);
 
 
-
-        step+=0.02;
-        sphere.position.x = 0+( 10*(Math.cos(step)));
-        sphere.position.y = 0.75*Math.PI/2 +( 6*Math.abs(Math.sin(step)));
+        step += 0.02;
+        sphere.position.x = 0 + ( 10 * (Math.cos(step)));
+        sphere.position.y = 0.75 * Math.PI / 2 + ( 6 * Math.abs(Math.sin(step)));
 
         spotLight.target = sphere;
 

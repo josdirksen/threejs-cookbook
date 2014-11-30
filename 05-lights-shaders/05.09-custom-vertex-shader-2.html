@@ -19,6 +19,7 @@
     gl_Position = projectionMatrix *
     modelViewMatrix * vec4(position, 1.0 );
     }
+
 </script>
 
 <script id="perlinNoise" type="x-shader/x-vertex">
@@ -239,14 +240,15 @@
     gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
 
     }
+
 </script>
 
 
 <script>
 
-//    Show how to setup a spotlight
-//    in the threre is more, also show debug camera for spotlight.
-//    in the how it works show the various properties.
+    //    Show how to setup a spotlight
+    //    in the threre is more, also show debug camera for spotlight.
+    //    in the how it works show the various properties.
 
     // global variables
     var renderer;
@@ -254,7 +256,7 @@
     var camera;
     var start = Date.now();
 
-var uniforms;
+    var uniforms;
     var control;
 
     function init() {
@@ -273,7 +275,7 @@ var uniforms;
 
         // reuse the fragment shader stuff from the lambert material
         var lambertShader = THREE.ShaderLib['basic'];
-        uniforms = THREE.UniformsUtils.merge([lambertShader.uniforms, THREE.UniformsLib[ "lights" ]]);
+        uniforms = THREE.UniformsUtils.merge([lambertShader.uniforms, THREE.UniformsLib["lights"]]);
         var texture = THREE.ImageUtils.loadTexture('../assets/textures/marble.jpg');
         uniforms['map'].value = texture;
 
@@ -284,14 +286,14 @@ var uniforms;
 
         // since we use a texture, we need to inform three.js
         var defines = {};
-        defines[ "USE_MAP" ] = "";
+        defines["USE_MAP"] = "";
         var material = new THREE.ShaderMaterial({
             defines: defines,
             uniforms: uniforms,
             vertexShader: document.
                     getElementById('perlinNoise').text,
             fragmentShader: lambertShader.fragmentShader,
-            lights:true,
+            lights: true,
             fog: true
         });
 
@@ -301,7 +303,7 @@ var uniforms;
 //        var cubeGeometry = new THREE.CubeGeometry(4, 10, 10);
 
         var cube = new THREE.Mesh(cubeGeometry, material);
-        cube.name='cube';
+        cube.name = 'cube';
         scene.add(cube);
 
         // position and point the camera to the center of the scene
@@ -313,7 +315,7 @@ var uniforms;
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.rotationSpeed = 0.005;
             this.scale = 1;
         };
@@ -331,11 +333,11 @@ var uniforms;
 
     function render() {
         renderer.render(scene, camera);
-        scene.getObjectByName('cube').rotation.x+=control.rotationSpeed;
-        scene.getObjectByName('cube').scale.set(control.scale,control.scale,control.scale);
+        scene.getObjectByName('cube').rotation.x += control.rotationSpeed;
+        scene.getObjectByName('cube').scale.set(control.scale, control.scale, control.scale);
 
 
-        uniforms[ 'time' ].value = .00025 * ( Date.now() - start );
+        uniforms['time'].value = .00025 * ( Date.now() - start );
 
         requestAnimationFrame(render);
     }

@@ -49,29 +49,28 @@
         orbit = new THREE.OrbitControls(camera);
 
         var loader = new THREE.JSONLoader();
-        loader.load("../assets/models/monkey.js",function(model) {
+        loader.load("../assets/models/monkey.js", function (model) {
             monkey = new THREE.Mesh(model, new THREE.MeshPhongMaterial({
                 color: 0xffff33,
             }));
-            monkey.scale.set(10,10,10);
-            monkey.position.set(-5,0,0);
+            monkey.scale.set(10, 10, 10);
+            monkey.position.set(-5, 0, 0);
             monkey.castShadow = true;
             scene.add(monkey);
         });
 
-        var cubeGeom = new THREE.BoxGeometry(4,8,14);
+        var cubeGeom = new THREE.BoxGeometry(4, 8, 14);
         var cubeMesh = new THREE.Mesh(cubeGeom, new THREE.MeshPhongMaterial());
-        cubeMesh.position.set(20,1,10);
+        cubeMesh.position.set(20, 1, 10);
         cubeMesh.castShadow = true;
         cubeMesh.receiveShadow = true;
         scene.add(cubeMesh);
 
 
-
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
 
-        control = new function() {
+        control = new function () {
             this.castShadow = true;
             this.shadowCameraVisible = false;
 
@@ -96,7 +95,7 @@
 
     function addDirectionalLight(scene) {
         var directionalLight = new THREE.DirectionalLight();
-        directionalLight.position = new THREE.Vector3(70,40,-50);
+        directionalLight.position.copy(new THREE.Vector3(70, 40, -50));
         directionalLight.castShadow = true;
         directionalLight.shadowCameraVisible = false;
         directionalLight.shadowCameraNear = 25;
@@ -120,24 +119,23 @@
         gui.add(controlObject, 'shadowCameraVisible');
 
 
-
     }
 
     function addFloor() {
-        var floorGeometry = new THREE.PlaneGeometry(100,100,20,20);
+        var floorGeometry = new THREE.PlaneGeometry(100, 100, 20, 20);
         var floorMaterial = new THREE.MeshPhongMaterial();
         floorMaterial.map = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399.jpg");
         floorMaterial.bumpMap = THREE.ImageUtils.loadTexture("../assets/textures/Brick-2399-bump-map.jpg");
 
         floorMaterial.map.wrapS = floorMaterial.map.wrapT = THREE.RepeatWrapping;
-        floorMaterial.map.repeat.set( 4, 4 );
+        floorMaterial.map.repeat.set(4, 4);
         floorMaterial.bumpMap.wrapS = floorMaterial.bumpMap.wrapT = THREE.RepeatWrapping;
-        floorMaterial.bumpMap.repeat.set( 4, 4 );
+        floorMaterial.bumpMap.repeat.set(4, 4);
 
 
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.receiveShadow = true;
-        floorMesh.rotation.x = -0.5*Math.PI;
+        floorMesh.rotation.x = -0.5 * Math.PI;
         floorMesh.name = 'floor';
         scene.add(floorMesh);
     }

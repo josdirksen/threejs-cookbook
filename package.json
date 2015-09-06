@@ -1,0 +1,25 @@
+{
+  "name": "threejs-cookbook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Examples for the Three.js Cookbook book published by packt http://www.smartjava.org",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "npm install --production",
+    "start": "http-server ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/josdirksen/threejs-cookbook"
+  },
+  "author": "Jos Dirksen",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/josdirksen/threejs-cookbook/issues"
+  },
+  "homepage": "https://github.com/josdirksen/threejs-cookbook",
+  "dependencies": {
+    "http-server": "^0.8.0"
+  }
+}
